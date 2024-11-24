@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../providers/board_provider.dart';
@@ -41,33 +43,22 @@ class KanbanColumnWidget extends HookConsumerWidget {
         children: [
           _buildHeader(),
           Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        children: [
-                          _buildInsertTarget(ref, -1), // Target inicial
-                          ...List.generate(column.tasks.length, (index) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                _buildDraggableTask(column.tasks[index]),
-                                _buildInsertTarget(ref, index),
-                              ],
-                            );
-                          }),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  _buildInsertTarget(ref, -1), // Target inicial
+                  ...List.generate(column.tasks.length, (index) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildDraggableTask(column.tasks[index], ref),
+                        _buildInsertTarget(ref, index),
+                      ],
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
         ],
@@ -111,54 +102,65 @@ class KanbanColumnWidget extends HookConsumerWidget {
     return DragTarget<TaskModel>(
       builder: (context, candidateData, rejectedData) {
         final isActive = candidateData.isNotEmpty;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          height: isActive ? 80 : 8,
-          margin: EdgeInsets.symmetric(
-            vertical: isActive ? 8.0 : 2.0,
-            horizontal: isActive ? 8.0 : 0.0,
-          ),
-          decoration: BoxDecoration(
-            color: isActive
-                ? AppTheme.primaryColor.withOpacity(0.1)
-                : Colors.transparent,
-            border: Border.all(
-              color: isActive ? AppTheme.primaryColor : Colors.transparent,
-              width: 2,
-              style: BorderStyle.none,
-            ),
-            borderRadius: BorderRadius.circular(AppTheme.borderRadius_md),
-          ),
-          child: isActive
-              ? SizedBox.expand(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.add_circle_outline,
-                        size: 24,
-                        color: AppTheme.primaryColor,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Drop here',
-                        style: TextStyle(
+        return TweenAnimationBuilder<double>(
+          duration:
+              const Duration(milliseconds: 150), // Duración de la animación
+          tween: Tween(begin: 0.0, end: isActive ? 1.0 : 0.0),
+          curve: Curves.easeInOut,
+          builder: (context, value, child) {
+            return Container(
+              height: lerpDouble(
+                  16, 100, value), // Interpolación suave de la altura
+              margin: EdgeInsets.symmetric(
+                vertical:
+                    lerpDouble(4, 8, value)!, // Interpolación de los márgenes
+              ),
+              decoration: BoxDecoration(
+                color: Color.lerp(
+                  Colors.transparent,
+                  AppTheme.primaryColor.withOpacity(0.2),
+                  value,
+                ),
+                border: Border.all(
+                  color: Color.lerp(
+                    Colors.transparent,
+                    AppTheme.primaryColor,
+                    value,
+                  )!,
+                  width: lerpDouble(1, 3, value)!,
+                ),
+                borderRadius: BorderRadius.circular(AppTheme.borderRadius_md),
+              ),
+              child: value > 0
+                  ? Opacity(
+                      opacity: value,
+                      child: Center(
+                        child: Icon(
+                          Icons.add_circle,
+                          size: lerpDouble(0, 28, value),
                           color: AppTheme.primaryColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
-                  ),
-                )
-              : null,
+                    )
+                  : null,
+            );
+          },
         );
       },
-      onWillAccept: (task) => true,
-      onAccept: (task) {
+      onWillAccept: (task) {
+        // Agregamos un pequeño delay antes de rechazar el drop
+        return true;
+      },
+      onLeave: (task) {
+        // Opcional: puedes agregar un pequeño delay aquí también
+        Future.delayed(const Duration(milliseconds: 100), () {
+          // Cualquier limpieza necesaria
+        });
+      },
+      onAcceptWithDetails: (task) {
         final newIndex = index + 1;
-        if (task.columnId == column.id) {
-          final oldIndex = column.tasks.indexWhere((t) => t.id == task.id);
+        if (task.data.columnId == column.id) {
+          final oldIndex = column.tasks.indexWhere((t) => t.id == task.data.id);
           if (oldIndex != -1) {
             ref.read(boardNotifierProvider.notifier).reorderTasks(
                   column.id,
@@ -168,9 +170,9 @@ class KanbanColumnWidget extends HookConsumerWidget {
           }
         } else {
           ref.read(boardNotifierProvider.notifier).moveTaskToPosition(
-                task.columnId,
+                task.data.columnId,
                 column.id,
-                task,
+                task.data,
                 newIndex,
               );
         }
@@ -179,32 +181,32 @@ class KanbanColumnWidget extends HookConsumerWidget {
     );
   }
 
-  Widget _buildDraggableTask(TaskModel task) {
-    return LongPressDraggable<TaskModel>(
-      data: task,
-      delay: const Duration(milliseconds: 300),
-      hapticFeedbackOnStart: true,
-      onDragStarted: onDragStarted,
-      onDragEnd: (_) => onDragEnded?.call(),
-      onDragCompleted: onDragEnded,
-      onDraggableCanceled: (_, __) => onDragEnded?.call(),
-      onDragUpdate: onDragUpdate,
-      feedback: Material(
-        elevation: 8.0,
-        borderRadius: BorderRadius.circular(AppTheme.borderRadius_md),
-        child: SizedBox(
-          width: AppTheme.columnWidth - (AppTheme.columnSpacing * 2),
+  Widget _buildDraggableTask(TaskModel task, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0), // Mayor separación
+      child: LongPressDraggable<TaskModel>(
+        data: task,
+        delay: const Duration(milliseconds: 300),
+        hapticFeedbackOnStart: true,
+        onDragStarted: onDragStarted,
+        onDragEnd: (_) => onDragEnded?.call(),
+        onDragCompleted: onDragEnded,
+        onDraggableCanceled: (_, __) => onDragEnded?.call(),
+        onDragUpdate: onDragUpdate,
+        feedback: Material(
+          elevation: 8.0,
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius_md),
+          child: SizedBox(
+            width: AppTheme.columnWidth - (AppTheme.columnSpacing * 2),
+            child: TaskCard(task: task),
+          ),
+        ),
+        childWhenDragging: Opacity(
+          opacity: 0.5,
           child: TaskCard(task: task),
         ),
-      ),
-      childWhenDragging: Opacity(
-        opacity: 0.5,
-        child: TaskCard(task: task),
-      ),
-      child: MouseRegion(
-        cursor: SystemMouseCursors.grab,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.grab,
           child: TaskCard(task: task),
         ),
       ),
