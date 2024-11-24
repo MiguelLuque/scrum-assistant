@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:scrum_assistant/models/column_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../providers/board_provider.dart';
 import '../widgets/kanban_column.dart';
@@ -43,27 +42,39 @@ class BoardScreen extends HookConsumerWidget {
             Column(
               children: [
                 Expanded(
-                  child: PageView(
+                  child: PageView.builder(
                     controller: pageController,
-                    children: List.generate(columns.length, (index) {
+                    physics: isDragging.value
+                        ? const NeverScrollableScrollPhysics()
+                        : const AlwaysScrollableScrollPhysics(),
+                    itemCount: columns.length,
+                    itemBuilder: (context, index) {
                       return Padding(
                         padding: EdgeInsets.all(AppTheme.spacing_md),
                         child: KanbanColumnWidget(
                           key: columnKeys[index],
                           column: columns[index],
-                          onDragStarted: () => isDragging.value = true,
-                          onDragEnded: () => isDragging.value = false,
+                          onDragStarted: () {
+                            isDragging.value = true;
+                            dragPosition.value = null;
+                          },
+                          onDragEnded: () {
+                            isDragging.value = false;
+                            dragPosition.value = null;
+                          },
                           onDragUpdate: (details) {
+                            if (!isDragging.value) return;
                             dragPosition.value = details.globalPosition;
                             _handlePageDrag(
                               context,
                               details.globalPosition,
                               pageController,
+                              ref,
                             );
                           },
                         ),
                       );
-                    }),
+                    },
                   ),
                 ),
                 Container(
@@ -84,15 +95,34 @@ class BoardScreen extends HookConsumerWidget {
             ),
             if (isDragging.value)
               Positioned.fill(
-                child: IgnorePointer(
-                  ignoring: true, // Ignora eventos táctiles en esta capa
-                  child: Opacity(
-                    opacity: 0.1, // Ajusta la opacidad si es necesario
-                    child: Container(
-                      color: Colors
-                          .black, // Puede ser un fondo oscuro si es requerido
+                child: Stack(
+                  children: [
+                    IgnorePointer(
+                      child: Container(
+                        color: Colors.black.withOpacity(0.1),
+                      ),
                     ),
-                  ),
+                    Builder(
+                      builder: (context) {
+                        final screenWidth = MediaQuery.of(context).size.width;
+                        return Row(
+                          children: [
+                            _buildEdgeIndicator(
+                              isLeft: true,
+                              isVisible: dragPosition.value != null &&
+                                  dragPosition.value!.dx < screenWidth * 0.15,
+                            ),
+                            const Spacer(),
+                            _buildEdgeIndicator(
+                              isLeft: false,
+                              isVisible: dragPosition.value != null &&
+                                  dragPosition.value!.dx > screenWidth * 0.85,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
           ],
@@ -105,74 +135,67 @@ class BoardScreen extends HookConsumerWidget {
     BuildContext context,
     Offset position,
     PageController controller,
+    WidgetRef ref,
   ) async {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final edgeThreshold = screenWidth * 0.1; // 10% del ancho de la pantalla
+    if (!controller.hasClients) return;
 
-    if (position.dx < edgeThreshold && controller.page! > 0) {
-      await controller.previousPage(
-        duration: AppTheme.quickAnimation,
-        curve: Curves.easeOut,
-      );
-    } else if (position.dx > screenWidth - edgeThreshold &&
-        controller.page! < controller.positions.length - 1) {
-      await controller.nextPage(
-        duration: AppTheme.quickAnimation,
-        curve: Curves.easeOut,
-      );
+    final screenWidth = MediaQuery.of(context).size.width;
+    final edgeThreshold = screenWidth * 0.15;
+    final currentPage = controller.page?.round() ?? 0;
+    final columns = ref.read(boardNotifierProvider);
+    final maxPage = columns.length - 1;
+
+    const animationDuration = Duration(milliseconds: 600);
+    const navigationDelay = Duration(milliseconds: 500);
+
+    DateTime? lastNavigationTime;
+
+    try {
+      if (lastNavigationTime != null &&
+          DateTime.now().difference(lastNavigationTime!) < navigationDelay) {
+        return;
+      }
+
+      if (position.dx < edgeThreshold && currentPage > 0) {
+        print('Moving left from page $currentPage');
+        lastNavigationTime = DateTime.now();
+        await controller.animateToPage(
+          currentPage - 1,
+          duration: animationDuration,
+          curve: Curves.easeInOut,
+        );
+      } else if (position.dx > (screenWidth - edgeThreshold) &&
+          currentPage < maxPage) {
+        print('Moving right from page $currentPage');
+        lastNavigationTime = DateTime.now();
+        await controller.animateToPage(
+          currentPage + 1,
+          duration: animationDuration,
+          curve: Curves.easeInOut,
+        );
+      }
+    } catch (e) {
+      print('Error during page animation: $e');
     }
   }
 
-  Widget _buildDragTargetOverlay(
-    BuildContext context,
-    List<ColumnModel> columns,
-    PageController controller,
-    Offset? dragPosition,
-  ) {
-    if (dragPosition == null) return const SizedBox.shrink();
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isNearLeftEdge = dragPosition.dx < screenWidth * 0.1;
-    final isNearRightEdge = dragPosition.dx > screenWidth * 0.9;
-
-    return Container(
-      color: Colors.black.withOpacity(0.1),
-      child: Row(
-        children: [
-          AnimatedOpacity(
-            duration: AppTheme.quickAnimation,
-            opacity: isNearLeftEdge ? 1.0 : 0.0,
-            child: Container(
-              width: 40,
-              margin: EdgeInsets.all(AppTheme.spacing_md),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(AppTheme.borderRadius_md),
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios,
-                color: AppTheme.primaryColor,
-              ),
-            ),
-          ),
-          const Spacer(),
-          AnimatedOpacity(
-            duration: AppTheme.quickAnimation,
-            opacity: isNearRightEdge ? 1.0 : 0.0,
-            child: Container(
-              width: 40,
-              margin: EdgeInsets.all(AppTheme.spacing_md),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(AppTheme.borderRadius_md),
-              ),
-              child: const Icon(
-                Icons.arrow_forward_ios,
-                color: AppTheme.primaryColor,
-              ),
-            ),
-          ),
-        ],
+  Widget _buildEdgeIndicator({required bool isLeft, required bool isVisible}) {
+    return AnimatedOpacity(
+      opacity: isVisible ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 200),
+      child: Container(
+        width: 40,
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: AppTheme.primaryColor.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          isLeft ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+          color: AppTheme.primaryColor,
+          size: 24,
+        ),
       ),
     );
   }

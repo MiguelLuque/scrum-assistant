@@ -135,4 +135,26 @@ class BoardNotifier extends _$BoardNotifier {
       return column;
     }).toList();
   }
+
+  void moveTaskToPosition(
+    String fromColumnId,
+    String toColumnId,
+    TaskModel task,
+    int newIndex,
+  ) {
+    state = state.map((column) {
+      if (column.id == fromColumnId) {
+        return column.copyWith(
+          tasks: column.tasks.where((t) => t.id != task.id).toList(),
+        );
+      }
+      if (column.id == toColumnId) {
+        final updatedTask = task.copyWith(columnId: toColumnId);
+        final newTasks = List<TaskModel>.from(column.tasks);
+        newTasks.insert(newIndex, updatedTask);
+        return column.copyWith(tasks: newTasks);
+      }
+      return column;
+    }).toList();
+  }
 }
