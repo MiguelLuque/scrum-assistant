@@ -9,9 +9,10 @@ class ColumnModel with _$ColumnModel {
   const factory ColumnModel({
     required String id,
     required String title,
+    //required int order,
     @Default([]) List<TaskModel> tasks,
   }) = _ColumnModel;
 
   factory ColumnModel.fromJson(Map<String, dynamic> json) =>
       _$ColumnModelFromJson(json);
-} 
+}

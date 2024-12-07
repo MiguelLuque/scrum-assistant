@@ -21,7 +21,7 @@ ColumnModel _$ColumnModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ColumnModel {
   String get id => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError; //required int order,
   List<TaskModel> get tasks => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -132,7 +132,9 @@ class _$ColumnModelImpl implements _ColumnModel {
   final String id;
   @override
   final String title;
+//required int order,
   final List<TaskModel> _tasks;
+//required int order,
   @override
   @JsonKey()
   List<TaskModel> get tasks {
@@ -188,7 +190,7 @@ abstract class _ColumnModel implements ColumnModel {
   String get id;
   @override
   String get title;
-  @override
+  @override //required int order,
   List<TaskModel> get tasks;
   @override
   @JsonKey(ignore: true)
