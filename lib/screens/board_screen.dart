@@ -77,8 +77,7 @@ class BoardScreen extends HookConsumerWidget {
                     },
                   ),
                 ),
-                Container(
-                  color: AppTheme.surfaceColor.withOpacity(0.9),
+                Padding(
                   padding: EdgeInsets.only(bottom: AppTheme.spacing_lg),
                   child: SmoothPageIndicator(
                     controller: pageController,
@@ -88,6 +87,8 @@ class BoardScreen extends HookConsumerWidget {
                       dotWidth: 8,
                       type: WormType.thin,
                       activeDotColor: AppTheme.primaryColor,
+                      dotColor: AppTheme.surfaceColor.withOpacity(0.3),
+                      spacing: 8,
                     ),
                   ),
                 ),
