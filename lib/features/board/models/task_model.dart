@@ -9,7 +9,12 @@ class TaskModel with _$TaskModel {
     required String id,
     required String title,
     String? description,
+    DateTime? dueDate,
+    @Default([]) List<String> labels,
     required String columnId,
+    @Default(false) bool isCompleted,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = _TaskModel;
 
   factory TaskModel.fromJson(Map<String, dynamic> json) =>

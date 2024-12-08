@@ -26,6 +26,7 @@ class BoardNotifier extends _$BoardNotifier {
             columnId: '1',
           ),
         ],
+        order: 1,
       ),
       const ColumnModel(
         id: '2',
@@ -38,6 +39,7 @@ class BoardNotifier extends _$BoardNotifier {
             columnId: '2',
           ),
         ],
+        order: 2,
       ),
       const ColumnModel(
         id: '3',
@@ -50,6 +52,7 @@ class BoardNotifier extends _$BoardNotifier {
             columnId: '3',
           ),
         ],
+        order: 3,
       ),
     ];
   }

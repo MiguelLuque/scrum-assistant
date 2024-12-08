@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'screens/board_screen.dart';
+import 'package:scrum_assistant/features/board/screens/board_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {

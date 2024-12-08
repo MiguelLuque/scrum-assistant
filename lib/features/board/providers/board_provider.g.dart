@@ -6,7 +6,7 @@ part of 'board_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$boardNotifierHash() => r'6a69d80c6d9714621678e7df726c966fcbd183da';
+String _$boardNotifierHash() => r'18f8762a32fa86fac95f94fa297cee6948fdf4bf';
 
 /// See also [BoardNotifier].
 @ProviderFor(BoardNotifier)

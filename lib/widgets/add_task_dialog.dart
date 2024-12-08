@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../models/task_model.dart';
+import 'package:scrum_assistant/features/board/models/task_model.dart';
 
 class AddTaskDialog extends HookConsumerWidget {
   final String columnId;

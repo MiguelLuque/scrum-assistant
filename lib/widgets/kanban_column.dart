@@ -2,9 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../providers/board_provider.dart';
-import '../models/column_model.dart';
-import '../models/task_model.dart';
+import 'package:scrum_assistant/features/board/models/column_model.dart';
+import 'package:scrum_assistant/features/board/models/task_model.dart';
+import 'package:scrum_assistant/features/board/providers/board_provider.dart';
+
 import '../theme/app_theme.dart';
 import 'task_card.dart';
 
