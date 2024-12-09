@@ -44,7 +44,7 @@ class KanbanColumnWidget extends ConsumerWidget {
                   for (final task in column.tasks)
                     LongPressDraggable<TaskModel>(
                       data: task,
-                      delay: const Duration(milliseconds: 500),
+                      delay: const Duration(milliseconds: 300),
                       feedback: SizedBox(
                         width: AppTheme.columnWidth - (AppTheme.spacing_md * 2),
                         child: Material(

@@ -62,14 +62,17 @@ class BoardNotifier extends _$BoardNotifier {
     print(
         'Moving task ${task.title} from column $sourceColumnIndex to column $destinationColumnIndex');
 
+    if (sourceColumnIndex == destinationColumnIndex) {
+      return;
+    }
     state = state.map((column) {
-      if (column.id == sourceColumnIndex) {
+      if (column.id == state[sourceColumnIndex].id) {
         print('Removing task ${task.title} from column $sourceColumnIndex');
         return column.copyWith(
           tasks: column.tasks.where((t) => t.id != task.id).toList(),
         );
       }
-      if (column.id == destinationColumnIndex) {
+      if (column.id == state[destinationColumnIndex].id) {
         print('Adding task ${task.title} to column $destinationColumnIndex');
         final updatedTask = task.copyWith(columnId: destinationColumnIndex);
         return column.copyWith(
