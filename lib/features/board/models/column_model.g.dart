@@ -8,7 +8,7 @@ part of 'column_model.dart';
 
 _$ColumnModelImpl _$$ColumnModelImplFromJson(Map<String, dynamic> json) =>
     _$ColumnModelImpl(
-      id: json['id'] as String,
+      id: (json['id'] as num).toInt(),
       title: json['title'] as String,
       order: (json['order'] as num).toInt(),
       tasks: (json['tasks'] as List<dynamic>?)

@@ -17,16 +17,17 @@ class BoardRepository {
     return board;
   }
 
-  Future<ColumnModel> createColumn(String boardId, String title, int order) async {
+  Future<ColumnModel> createColumn(
+      int columnId, String boardId, String title, int order) async {
     return ColumnModel(
-      id: DateTime.now().toString(),
+      id: columnId,
       title: title,
       order: order,
     );
   }
 
   Future<TaskModel> createTask(TaskModel task) async {
-    return task.copyWith(id: DateTime.now().toString());
+    return task.copyWith(id: task.id);
   }
 
   Future<void> updateTaskColumn(String taskId, String columnId) async {}

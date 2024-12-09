@@ -1,46 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:scrum_assistant/features/board/models/task_model.dart';
 
-class BoardDragController {
-  DateTime? _lastNavigationTime;
-  static const _animationDuration = Duration(milliseconds: 600);
-  static const _navigationDelay = Duration(milliseconds: 500);
+class BoardDragController extends ChangeNotifier {
+  TaskModel? _draggedTask;
+  int? _sourceColumnIndex;
 
-  Future<void> handlePageDrag({
-    required BuildContext context,
-    required Offset position,
-    required PageController controller,
-    required int maxPage,
-  }) async {
-    if (!controller.hasClients) return;
+  TaskModel? get draggedTask => _draggedTask;
+  int? get sourceColumnIndex => _sourceColumnIndex;
 
-    final screenWidth = MediaQuery.of(context).size.width;
-    final edgeThreshold = screenWidth * 0.15;
-    final currentPage = controller.page?.round() ?? 0;
-
-    try {
-      if (_lastNavigationTime != null &&
-          DateTime.now().difference(_lastNavigationTime!) < _navigationDelay) {
-        return;
-      }
-
-      if (position.dx < edgeThreshold && currentPage > 0) {
-        _lastNavigationTime = DateTime.now();
-        await controller.animateToPage(
-          currentPage - 1,
-          duration: _animationDuration,
-          curve: Curves.easeInOut,
-        );
-      } else if (position.dx > (screenWidth - edgeThreshold) &&
-          currentPage < maxPage) {
-        _lastNavigationTime = DateTime.now();
-        await controller.animateToPage(
-          currentPage + 1,
-          duration: _animationDuration,
-          curve: Curves.easeInOut,
-        );
-      }
-    } catch (e) {
-      debugPrint('Error during page animation: $e');
-    }
+  void startDrag(TaskModel task, int columnIndex) {
+    _draggedTask = task;
+    _sourceColumnIndex = columnIndex;
+    notifyListeners();
   }
-} 
+
+  void updateDrag(TaskModel task, int columnIndex) {
+    _draggedTask = task;
+    _sourceColumnIndex = columnIndex;
+    notifyListeners();
+  }
+
+  void endDrag() {
+    _draggedTask = null;
+    _sourceColumnIndex = null;
+    notifyListeners();
+  }
+}
+
+final boardDragControllerProvider = ChangeNotifierProvider<BoardDragController>((ref) {
+  return BoardDragController();
+});

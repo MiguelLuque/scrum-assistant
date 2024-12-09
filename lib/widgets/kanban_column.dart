@@ -1,30 +1,23 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:scrum_assistant/controllers/board_drag_controller.dart';
 import 'package:scrum_assistant/features/board/models/column_model.dart';
 import 'package:scrum_assistant/features/board/models/task_model.dart';
 import 'package:scrum_assistant/features/board/providers/board_provider.dart';
-
-import '../theme/app_theme.dart';
+import 'package:scrum_assistant/theme/app_theme.dart';
 import 'task_card.dart';
 
-class KanbanColumnWidget extends HookConsumerWidget {
+class KanbanColumnWidget extends ConsumerWidget {
   final ColumnModel column;
-  final VoidCallback? onDragStarted;
-  final VoidCallback? onDragEnded;
-  final void Function(DragUpdateDetails)? onDragUpdate;
 
   const KanbanColumnWidget({
     super.key,
     required this.column,
-    this.onDragStarted,
-    this.onDragEnded,
-    this.onDragUpdate,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final columns = ref.watch(boardNotifierProvider);
     return Container(
       width: AppTheme.columnWidth,
       margin: EdgeInsets.all(AppTheme.columnSpacing),
@@ -45,19 +38,34 @@ class KanbanColumnWidget extends HookConsumerWidget {
           _buildHeader(),
           Expanded(
             child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.all(AppTheme.spacing_md),
               child: Column(
                 children: [
-                  _buildInsertTarget(ref, -1), // Target inicial
-                  ...List.generate(column.tasks.length, (index) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildDraggableTask(column.tasks[index], ref),
-                        _buildInsertTarget(ref, index),
-                      ],
-                    );
-                  }),
+                  for (final task in column.tasks)
+                    LongPressDraggable<TaskModel>(
+                      data: task,
+                      delay: const Duration(milliseconds: 500),
+                      feedback: SizedBox(
+                        width: AppTheme.columnWidth - (AppTheme.spacing_md * 2),
+                        child: Material(
+                          child: TaskCard(task: task),
+                        ),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: 0.5,
+                        child: TaskCard(task: task),
+                      ),
+                      onDragStarted: () {
+                        ref.read(boardDragControllerProvider).startDrag(
+                              task,
+                              columns.indexOf(column),
+                            );
+                      },
+                      onDragEnd: (details) {
+                        ref.read(boardDragControllerProvider).endDrag();
+                      },
+                      child: TaskCard(task: task),
+                    ),
                 ],
               ),
             ),
@@ -88,128 +96,13 @@ class KanbanColumnWidget extends HookConsumerWidget {
             ),
             child: Text(
               '${column.tasks.length}',
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppTheme.primaryColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildInsertTarget(WidgetRef ref, int index) {
-    return DragTarget<TaskModel>(
-      builder: (context, candidateData, rejectedData) {
-        final isActive = candidateData.isNotEmpty;
-        return TweenAnimationBuilder<double>(
-          duration:
-              const Duration(milliseconds: 150), // Duración de la animación
-          tween: Tween(begin: 0.0, end: isActive ? 1.0 : 0.0),
-          curve: Curves.easeInOut,
-          builder: (context, value, child) {
-            return Container(
-              height: lerpDouble(
-                  16, 100, value), // Interpolación suave de la altura
-              margin: EdgeInsets.symmetric(
-                vertical:
-                    lerpDouble(4, 8, value)!, // Interpolación de los márgenes
-              ),
-              decoration: BoxDecoration(
-                color: Color.lerp(
-                  Colors.transparent,
-                  AppTheme.primaryColor.withOpacity(0.2),
-                  value,
-                ),
-                border: Border.all(
-                  color: Color.lerp(
-                    Colors.transparent,
-                    AppTheme.primaryColor,
-                    value,
-                  )!,
-                  width: lerpDouble(1, 3, value)!,
-                ),
-                borderRadius: BorderRadius.circular(AppTheme.borderRadius_md),
-              ),
-              child: value > 0
-                  ? Opacity(
-                      opacity: value,
-                      child: Center(
-                        child: Icon(
-                          Icons.add_circle,
-                          size: lerpDouble(0, 28, value),
-                          color: AppTheme.primaryColor,
-                        ),
-                      ),
-                    )
-                  : null,
-            );
-          },
-        );
-      },
-      onWillAccept: (task) {
-        // Agregamos un pequeño delay antes de rechazar el drop
-        return true;
-      },
-      onLeave: (task) {
-        // Opcional: puedes agregar un pequeño delay aquí también
-        Future.delayed(const Duration(milliseconds: 100), () {
-          // Cualquier limpieza necesaria
-        });
-      },
-      onAcceptWithDetails: (task) {
-        final newIndex = index + 1;
-        if (task.data.columnId == column.id) {
-          final oldIndex = column.tasks.indexWhere((t) => t.id == task.data.id);
-          if (oldIndex != -1) {
-            ref.read(boardNotifierProvider.notifier).reorderTasks(
-                  column.id,
-                  oldIndex,
-                  newIndex > oldIndex ? newIndex - 1 : newIndex,
-                );
-          }
-        } else {
-          ref.read(boardNotifierProvider.notifier).moveTaskToPosition(
-                task.data.columnId,
-                column.id,
-                task.data,
-                newIndex,
-              );
-        }
-        onDragEnded?.call();
-      },
-    );
-  }
-
-  Widget _buildDraggableTask(TaskModel task, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0), // Mayor separación
-      child: LongPressDraggable<TaskModel>(
-        data: task,
-        delay: const Duration(milliseconds: 300),
-        hapticFeedbackOnStart: true,
-        onDragStarted: onDragStarted,
-        onDragEnd: (_) => onDragEnded?.call(),
-        onDragCompleted: onDragEnded,
-        onDraggableCanceled: (_, __) => onDragEnded?.call(),
-        onDragUpdate: onDragUpdate,
-        feedback: Material(
-          elevation: 8.0,
-          borderRadius: BorderRadius.circular(AppTheme.borderRadius_md),
-          child: SizedBox(
-            width: AppTheme.columnWidth - (AppTheme.columnSpacing * 2),
-            child: TaskCard(task: task),
-          ),
-        ),
-        childWhenDragging: Opacity(
-          opacity: 0.5,
-          child: TaskCard(task: task),
-        ),
-        child: MouseRegion(
-          cursor: SystemMouseCursors.grab,
-          child: TaskCard(task: task),
-        ),
       ),
     );
   }

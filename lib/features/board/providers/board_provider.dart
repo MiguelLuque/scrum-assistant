@@ -10,46 +10,46 @@ class BoardNotifier extends _$BoardNotifier {
   List<ColumnModel> build() {
     return [
       ColumnModel(
-        id: '1',
+        id: 1,
         title: 'To Do',
         tasks: [
           TaskModel(
-            id: '1',
-            title: 'Implement Authentication',
+            id: 1,
+            title: 'task 1',
             description: 'Add user login and registration',
-            columnId: '1',
+            columnId: 1,
           ),
           TaskModel(
-            id: '2',
-            title: 'Design Dashboard',
+            id: 2,
+            title: 'task 2',
             description: 'Create wireframes for main dashboard',
-            columnId: '1',
+            columnId: 1,
           ),
         ],
         order: 1,
       ),
       const ColumnModel(
-        id: '2',
+        id: 2,
         title: 'In Progress',
         tasks: [
           TaskModel(
-            id: '3',
-            title: 'Setup CI/CD',
+            id: 3,
+            title: 'task 3',
             description: 'Configure GitHub Actions workflow',
-            columnId: '2',
+            columnId: 2,
           ),
         ],
         order: 2,
       ),
       const ColumnModel(
-        id: '3',
+        id: 3,
         title: 'Done',
         tasks: [
           TaskModel(
-            id: '4',
-            title: 'Project Setup',
+            id: 4,
+            title: 'task 4',
             description: 'Initialize Flutter project with dependencies',
-            columnId: '3',
+            columnId: 3,
           ),
         ],
         order: 3,
@@ -57,20 +57,21 @@ class BoardNotifier extends _$BoardNotifier {
     ];
   }
 
-  void moveTask(String fromColumnId, String toColumnId, TaskModel task) {
+  void moveTask(
+      TaskModel task, int sourceColumnIndex, int destinationColumnIndex) {
     print(
-        'Moving task ${task.title} from column $fromColumnId to column $toColumnId');
+        'Moving task ${task.title} from column $sourceColumnIndex to column $destinationColumnIndex');
 
     state = state.map((column) {
-      if (column.id == fromColumnId) {
-        print('Removing task ${task.title} from column $fromColumnId');
+      if (column.id == sourceColumnIndex) {
+        print('Removing task ${task.title} from column $sourceColumnIndex');
         return column.copyWith(
           tasks: column.tasks.where((t) => t.id != task.id).toList(),
         );
       }
-      if (column.id == toColumnId) {
-        print('Adding task ${task.title} to column $toColumnId');
-        final updatedTask = task.copyWith(columnId: toColumnId);
+      if (column.id == destinationColumnIndex) {
+        print('Adding task ${task.title} to column $destinationColumnIndex');
+        final updatedTask = task.copyWith(columnId: destinationColumnIndex);
         return column.copyWith(
           tasks: [...column.tasks, updatedTask],
         );
@@ -81,10 +82,10 @@ class BoardNotifier extends _$BoardNotifier {
     print('Task moved successfully.');
   }
 
-  void addTask(String columnId, String title, String? description) {
+  void addTask(int columnId, String title, String? description) {
     print('Adding task $title to column $columnId');
     final newTask = TaskModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: DateTime.now().millisecondsSinceEpoch.toInt(),
       title: title,
       description: description,
       columnId: columnId,
@@ -141,7 +142,7 @@ class BoardNotifier extends _$BoardNotifier {
 
   void moveTaskToPosition(
     String fromColumnId,
-    String toColumnId,
+    int toColumnId,
     TaskModel task,
     int newIndex,
   ) {

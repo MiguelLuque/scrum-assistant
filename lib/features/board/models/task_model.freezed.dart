@@ -20,12 +20,12 @@ TaskModel _$TaskModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TaskModel {
-  String get id => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   DateTime? get dueDate => throw _privateConstructorUsedError;
   List<String> get labels => throw _privateConstructorUsedError;
-  String get columnId => throw _privateConstructorUsedError;
+  int get columnId => throw _privateConstructorUsedError;
   bool get isCompleted => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
@@ -42,12 +42,12 @@ abstract class $TaskModelCopyWith<$Res> {
       _$TaskModelCopyWithImpl<$Res, TaskModel>;
   @useResult
   $Res call(
-      {String id,
+      {int id,
       String title,
       String? description,
       DateTime? dueDate,
       List<String> labels,
-      String columnId,
+      int columnId,
       bool isCompleted,
       DateTime? createdAt,
       DateTime? updatedAt});
@@ -80,7 +80,7 @@ class _$TaskModelCopyWithImpl<$Res, $Val extends TaskModel>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -100,7 +100,7 @@ class _$TaskModelCopyWithImpl<$Res, $Val extends TaskModel>
       columnId: null == columnId
           ? _value.columnId
           : columnId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       isCompleted: null == isCompleted
           ? _value.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
@@ -126,12 +126,12 @@ abstract class _$$TaskModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {int id,
       String title,
       String? description,
       DateTime? dueDate,
       List<String> labels,
-      String columnId,
+      int columnId,
       bool isCompleted,
       DateTime? createdAt,
       DateTime? updatedAt});
@@ -162,7 +162,7 @@ class __$$TaskModelImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -182,7 +182,7 @@ class __$$TaskModelImplCopyWithImpl<$Res>
       columnId: null == columnId
           ? _value.columnId
           : columnId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       isCompleted: null == isCompleted
           ? _value.isCompleted
           : isCompleted // ignore: cast_nullable_to_non_nullable
@@ -218,7 +218,7 @@ class _$TaskModelImpl implements _TaskModel {
       _$$TaskModelImplFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
   final String title;
   @override
@@ -235,7 +235,7 @@ class _$TaskModelImpl implements _TaskModel {
   }
 
   @override
-  final String columnId;
+  final int columnId;
   @override
   @JsonKey()
   final bool isCompleted;
@@ -300,12 +300,12 @@ class _$TaskModelImpl implements _TaskModel {
 
 abstract class _TaskModel implements TaskModel {
   const factory _TaskModel(
-      {required final String id,
+      {required final int id,
       required final String title,
       final String? description,
       final DateTime? dueDate,
       final List<String> labels,
-      required final String columnId,
+      required final int columnId,
       final bool isCompleted,
       final DateTime? createdAt,
       final DateTime? updatedAt}) = _$TaskModelImpl;
@@ -314,7 +314,7 @@ abstract class _TaskModel implements TaskModel {
       _$TaskModelImpl.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
   String get title;
   @override
@@ -324,7 +324,7 @@ abstract class _TaskModel implements TaskModel {
   @override
   List<String> get labels;
   @override
-  String get columnId;
+  int get columnId;
   @override
   bool get isCompleted;
   @override

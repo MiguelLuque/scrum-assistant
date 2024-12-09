@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrum_assistant/features/board/models/task_model.dart';
+import 'package:scrum_assistant/features/board/providers/board_provider.dart';
 
 class AddTaskDialog extends HookConsumerWidget {
   final String columnId;
@@ -44,11 +45,12 @@ class AddTaskDialog extends HookConsumerWidget {
         TextButton(
           onPressed: () {
             final task = TaskModel(
-              id: DateTime.now().toString(),
+              id: ref.read(boardNotifierProvider).toList().length + 10,
               title: titleController.text,
               description: descriptionController.text.isEmpty
                   ? null
-                  : descriptionController.text, columnId: '',
+                  : descriptionController.text,
+              columnId: 1,
             );
             Navigator.of(context).pop(task);
           },
@@ -57,4 +59,4 @@ class AddTaskDialog extends HookConsumerWidget {
       ],
     );
   }
-} 
+}

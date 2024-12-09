@@ -1,35 +1,104 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:scrum_assistant/theme/app_theme.dart';
 
-class EdgeScrollIndicator extends StatelessWidget {
+class EdgeScrollIndicator extends StatefulWidget {
+  final VoidCallback onLeftEdgeReached;
+  final VoidCallback onRightEdgeReached;
+
   const EdgeScrollIndicator({
     super.key,
-    required this.isLeft,
-    required this.isVisible,
+    required this.onLeftEdgeReached,
+    required this.onRightEdgeReached,
   });
 
-  final bool isLeft;
-  final bool isVisible;
+  @override
+  _EdgeScrollIndicatorState createState() => _EdgeScrollIndicatorState();
+}
+
+class _EdgeScrollIndicatorState extends State<EdgeScrollIndicator> {
+  Timer? _leftScrollTimer;
+  Timer? _rightScrollTimer;
+
+  void _startLeftScrollTimer() {
+    _leftScrollTimer = Timer.periodic(
+      const Duration(milliseconds: 200),
+      (_) => widget.onLeftEdgeReached(),
+    );
+  }
+
+  void _startRightScrollTimer() {
+    _rightScrollTimer = Timer.periodic(
+      const Duration(milliseconds: 200),
+      (_) => widget.onRightEdgeReached(),
+    );
+  }
+
+  void _stopLeftScrollTimer() {
+    _leftScrollTimer?.cancel();
+    _leftScrollTimer = null;
+  }
+
+  void _stopRightScrollTimer() {
+    _rightScrollTimer?.cancel();
+    _rightScrollTimer = null;
+  }
+
+  @override
+  void dispose() {
+    _stopLeftScrollTimer();
+    _stopRightScrollTimer();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: isVisible ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 200),
-      child: Container(
-        width: 40,
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: AppTheme.primaryColor.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(8),
+    return Stack(
+      children: [
+        Positioned(
+          left: 0,
+          top: 0,
+          bottom: 0,
+          child: DragTarget(
+            onAcceptWithDetails: (_) {},
+            onLeave: (_) => _stopLeftScrollTimer(),
+            builder: (context, candidateData, rejectedData) {
+              return GestureDetector(
+                onTap: () => widget.onLeftEdgeReached(),
+                child: Container(
+                  width: 50,
+                  color: Colors.transparent,
+                ),
+              );
+            },
+            onWillAcceptWithDetails: (_) {
+              _startLeftScrollTimer();
+              return false;
+            },
+          ),
         ),
-        child: Icon(
-          isLeft ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
-          color: AppTheme.primaryColor,
-          size: 24,
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          child: DragTarget(
+            onAcceptWithDetails: (_) {},
+            onLeave: (_) => _stopRightScrollTimer(),
+            builder: (context, candidateData, rejectedData) {
+              return GestureDetector(
+                onTap: () => widget.onRightEdgeReached(),
+                child: Container(
+                  width: 50,
+                  color: Colors.transparent,
+                ),
+              );
+            },
+            onWillAcceptWithDetails: (_) {
+              _startRightScrollTimer();
+              return false;
+            },
+          ),
         ),
-      ),
+      ],
     );
   }
 }
