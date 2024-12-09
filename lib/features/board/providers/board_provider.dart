@@ -120,7 +120,7 @@ class BoardNotifier extends _$BoardNotifier {
     print('Task $taskId deleted successfully.');
   }
 
-  void reorderTasks(String columnId, int oldIndex, int newIndex) {
+  void reorderTasks(int columnId, int oldIndex, int newIndex) {
     state = state.map((column) {
       if (column.id == columnId) {
         final tasks = List<TaskModel>.from(column.tasks);

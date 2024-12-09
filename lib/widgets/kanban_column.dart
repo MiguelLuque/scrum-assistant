@@ -38,37 +38,47 @@ class KanbanColumnWidget extends ConsumerWidget {
         children: [
           _buildHeader(context),
           Expanded(
-            child: SingleChildScrollView(
+            child: ReorderableListView.builder(
               padding: EdgeInsets.all(AppTheme.spacing_md),
-              child: Column(
-                children: [
-                  for (final task in column.tasks)
-                    LongPressDraggable<TaskModel>(
-                      data: task,
-                      delay: const Duration(milliseconds: 300),
-                      feedback: SizedBox(
-                        width: AppTheme.columnWidth - (AppTheme.spacing_md * 2),
-                        child: Material(
-                          child: TaskCard(task: task),
-                        ),
-                      ),
-                      childWhenDragging: Opacity(
-                        opacity: 0.5,
+              itemCount: column.tasks.length,
+              onReorder: (oldIndex, newIndex) {
+                ref.read(boardNotifierProvider.notifier).reorderTasks(
+                      column.id,
+                      oldIndex,
+                      newIndex,
+                    );
+              },
+              itemBuilder: (context, index) {
+                final task = column.tasks[index];
+                return ReorderableDragStartListener(
+                  key: ValueKey(task.id),
+                  index: index,
+                  child: LongPressDraggable<TaskModel>(
+                    data: task,
+                    delay: const Duration(milliseconds: 300),
+                    feedback: SizedBox(
+                      width: AppTheme.columnWidth - (AppTheme.spacing_md * 2),
+                      child: Material(
                         child: TaskCard(task: task),
                       ),
-                      onDragStarted: () {
-                        ref.read(boardDragControllerProvider).startDrag(
-                              task,
-                              columns.indexOf(column),
-                            );
-                      },
-                      onDragEnd: (details) {
-                        ref.read(boardDragControllerProvider).endDrag();
-                      },
+                    ),
+                    childWhenDragging: Opacity(
+                      opacity: 0.5,
                       child: TaskCard(task: task),
                     ),
-                ],
-              ),
+                    onDragStarted: () {
+                      ref.read(boardDragControllerProvider).startDrag(
+                            task,
+                            columns.indexOf(column),
+                          );
+                    },
+                    onDragEnd: (details) {
+                      ref.read(boardDragControllerProvider).endDrag();
+                    },
+                    child: TaskCard(task: task),
+                  ),
+                );
+              },
             ),
           ),
         ],
