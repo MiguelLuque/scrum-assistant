@@ -6,6 +6,7 @@ import 'package:scrum_assistant/features/board/models/task_model.dart';
 import 'package:scrum_assistant/features/board/providers/board_provider.dart';
 import 'package:scrum_assistant/theme/app_theme.dart';
 import 'task_card.dart';
+import 'add_task_dialog.dart';
 
 class KanbanColumnWidget extends ConsumerWidget {
   final ColumnModel column;
@@ -35,7 +36,7 @@ class KanbanColumnWidget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildHeader(),
+          _buildHeader(context),
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(AppTheme.spacing_md),
@@ -75,7 +76,7 @@ class KanbanColumnWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(AppTheme.spacing_md),
       child: Row(
@@ -85,22 +86,36 @@ class KanbanColumnWidget extends ConsumerWidget {
             column.title,
             style: AppTheme.columnHeaderStyle,
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 4,
-            ),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              '${column.tasks.length}',
-              style: const TextStyle(
-                color: AppTheme.primaryColor,
-                fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AddTaskDialog(columnId: column.id),
+                  );
+                },
+                tooltip: 'Add Task',
               ),
-            ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${column.tasks.length}',
+                  style: const TextStyle(
+                    color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

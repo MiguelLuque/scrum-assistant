@@ -21,9 +21,16 @@ class BoardScreen extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          backgroundColor: AppTheme.surfaceColor.withOpacity(0.9),
-          title: const Text('Kanban Board'),
-        ),
+            backgroundColor: AppTheme.surfaceColor.withOpacity(0.9),
+            title: const Text('Kanban Board'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.auto_awesome_sharp),
+                onPressed: () {
+                  // TODO: Implement add task dialog
+                },
+              ),
+            ]),
         body: Column(
           children: [
             Expanded(
