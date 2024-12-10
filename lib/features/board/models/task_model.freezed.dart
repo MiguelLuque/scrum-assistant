@@ -20,10 +20,15 @@ TaskModel _$TaskModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TaskModel {
-  String get id => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
-  String get columnId => throw _privateConstructorUsedError;
+  DateTime? get dueDate => throw _privateConstructorUsedError;
+  List<String> get labels => throw _privateConstructorUsedError;
+  int get columnId => throw _privateConstructorUsedError;
+  bool get isCompleted => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +41,16 @@ abstract class $TaskModelCopyWith<$Res> {
   factory $TaskModelCopyWith(TaskModel value, $Res Function(TaskModel) then) =
       _$TaskModelCopyWithImpl<$Res, TaskModel>;
   @useResult
-  $Res call({String id, String title, String? description, String columnId});
+  $Res call(
+      {int id,
+      String title,
+      String? description,
+      DateTime? dueDate,
+      List<String> labels,
+      int columnId,
+      bool isCompleted,
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -55,13 +69,18 @@ class _$TaskModelCopyWithImpl<$Res, $Val extends TaskModel>
     Object? id = null,
     Object? title = null,
     Object? description = freezed,
+    Object? dueDate = freezed,
+    Object? labels = null,
     Object? columnId = null,
+    Object? isCompleted = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -70,10 +89,30 @@ class _$TaskModelCopyWithImpl<$Res, $Val extends TaskModel>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
+      dueDate: freezed == dueDate
+          ? _value.dueDate
+          : dueDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      labels: null == labels
+          ? _value.labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       columnId: null == columnId
           ? _value.columnId
           : columnId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
+      isCompleted: null == isCompleted
+          ? _value.isCompleted
+          : isCompleted // ignore: cast_nullable_to_non_nullable
+              as bool,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -86,7 +125,16 @@ abstract class _$$TaskModelImplCopyWith<$Res>
       __$$TaskModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String title, String? description, String columnId});
+  $Res call(
+      {int id,
+      String title,
+      String? description,
+      DateTime? dueDate,
+      List<String> labels,
+      int columnId,
+      bool isCompleted,
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -103,13 +151,18 @@ class __$$TaskModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? title = null,
     Object? description = freezed,
+    Object? dueDate = freezed,
+    Object? labels = null,
     Object? columnId = null,
+    Object? isCompleted = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_$TaskModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -118,10 +171,30 @@ class __$$TaskModelImplCopyWithImpl<$Res>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
+      dueDate: freezed == dueDate
+          ? _value.dueDate
+          : dueDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      labels: null == labels
+          ? _value._labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       columnId: null == columnId
           ? _value.columnId
           : columnId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
+      isCompleted: null == isCompleted
+          ? _value.isCompleted
+          : isCompleted // ignore: cast_nullable_to_non_nullable
+              as bool,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -133,23 +206,47 @@ class _$TaskModelImpl implements _TaskModel {
       {required this.id,
       required this.title,
       this.description,
-      required this.columnId});
+      this.dueDate,
+      final List<String> labels = const [],
+      required this.columnId,
+      this.isCompleted = false,
+      this.createdAt,
+      this.updatedAt})
+      : _labels = labels;
 
   factory _$TaskModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$TaskModelImplFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
   final String title;
   @override
   final String? description;
   @override
-  final String columnId;
+  final DateTime? dueDate;
+  final List<String> _labels;
+  @override
+  @JsonKey()
+  List<String> get labels {
+    if (_labels is EqualUnmodifiableListView) return _labels;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_labels);
+  }
+
+  @override
+  final int columnId;
+  @override
+  @JsonKey()
+  final bool isCompleted;
+  @override
+  final DateTime? createdAt;
+  @override
+  final DateTime? updatedAt;
 
   @override
   String toString() {
-    return 'TaskModel(id: $id, title: $title, description: $description, columnId: $columnId)';
+    return 'TaskModel(id: $id, title: $title, description: $description, dueDate: $dueDate, labels: $labels, columnId: $columnId, isCompleted: $isCompleted, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -161,14 +258,31 @@ class _$TaskModelImpl implements _TaskModel {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.description, description) ||
                 other.description == description) &&
+            (identical(other.dueDate, dueDate) || other.dueDate == dueDate) &&
+            const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.columnId, columnId) ||
-                other.columnId == columnId));
+                other.columnId == columnId) &&
+            (identical(other.isCompleted, isCompleted) ||
+                other.isCompleted == isCompleted) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, title, description, columnId);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      title,
+      description,
+      dueDate,
+      const DeepCollectionEquality().hash(_labels),
+      columnId,
+      isCompleted,
+      createdAt,
+      updatedAt);
 
   @JsonKey(ignore: true)
   @override
@@ -186,22 +300,37 @@ class _$TaskModelImpl implements _TaskModel {
 
 abstract class _TaskModel implements TaskModel {
   const factory _TaskModel(
-      {required final String id,
+      {required final int id,
       required final String title,
       final String? description,
-      required final String columnId}) = _$TaskModelImpl;
+      final DateTime? dueDate,
+      final List<String> labels,
+      required final int columnId,
+      final bool isCompleted,
+      final DateTime? createdAt,
+      final DateTime? updatedAt}) = _$TaskModelImpl;
 
   factory _TaskModel.fromJson(Map<String, dynamic> json) =
       _$TaskModelImpl.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
   String get title;
   @override
   String? get description;
   @override
-  String get columnId;
+  DateTime? get dueDate;
+  @override
+  List<String> get labels;
+  @override
+  int get columnId;
+  @override
+  bool get isCompleted;
+  @override
+  DateTime? get createdAt;
+  @override
+  DateTime? get updatedAt;
   @override
   @JsonKey(ignore: true)
   _$$TaskModelImplCopyWith<_$TaskModelImpl> get copyWith =>

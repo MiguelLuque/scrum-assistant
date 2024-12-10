@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/task_model.dart';
+import 'package:scrum_assistant/features/board/models/task_model.dart';
 import '../theme/app_theme.dart';
 
 class TaskCard extends StatelessWidget {
@@ -115,4 +115,4 @@ class TaskCard extends StatelessWidget {
       ),
     );
   }
-} 
+}

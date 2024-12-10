@@ -21,8 +21,11 @@ BoardModel _$BoardModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$BoardModel {
   String get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
   List<ColumnModel> get columns => throw _privateConstructorUsedError;
+  bool get isArchived => throw _privateConstructorUsedError;
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +39,13 @@ abstract class $BoardModelCopyWith<$Res> {
           BoardModel value, $Res Function(BoardModel) then) =
       _$BoardModelCopyWithImpl<$Res, BoardModel>;
   @useResult
-  $Res call({String id, String name, List<ColumnModel> columns});
+  $Res call(
+      {String id,
+      String title,
+      List<ColumnModel> columns,
+      bool isArchived,
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -53,22 +62,37 @@ class _$BoardModelCopyWithImpl<$Res, $Val extends BoardModel>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
+    Object? title = null,
     Object? columns = null,
+    Object? isArchived = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
               as String,
       columns: null == columns
           ? _value.columns
           : columns // ignore: cast_nullable_to_non_nullable
               as List<ColumnModel>,
+      isArchived: null == isArchived
+          ? _value.isArchived
+          : isArchived // ignore: cast_nullable_to_non_nullable
+              as bool,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -81,7 +105,13 @@ abstract class _$$BoardModelImplCopyWith<$Res>
       __$$BoardModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, List<ColumnModel> columns});
+  $Res call(
+      {String id,
+      String title,
+      List<ColumnModel> columns,
+      bool isArchived,
+      DateTime? createdAt,
+      DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -96,22 +126,37 @@ class __$$BoardModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
+    Object? title = null,
     Object? columns = null,
+    Object? isArchived = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
   }) {
     return _then(_$BoardModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
               as String,
       columns: null == columns
           ? _value._columns
           : columns // ignore: cast_nullable_to_non_nullable
               as List<ColumnModel>,
+      isArchived: null == isArchived
+          ? _value.isArchived
+          : isArchived // ignore: cast_nullable_to_non_nullable
+              as bool,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -119,10 +164,13 @@ class __$$BoardModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$BoardModelImpl implements _BoardModel {
-  _$BoardModelImpl(
+  const _$BoardModelImpl(
       {required this.id,
-      required this.name,
-      required final List<ColumnModel> columns})
+      required this.title,
+      required final List<ColumnModel> columns,
+      this.isArchived = false,
+      this.createdAt,
+      this.updatedAt})
       : _columns = columns;
 
   factory _$BoardModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -131,7 +179,7 @@ class _$BoardModelImpl implements _BoardModel {
   @override
   final String id;
   @override
-  final String name;
+  final String title;
   final List<ColumnModel> _columns;
   @override
   List<ColumnModel> get columns {
@@ -141,8 +189,16 @@ class _$BoardModelImpl implements _BoardModel {
   }
 
   @override
+  @JsonKey()
+  final bool isArchived;
+  @override
+  final DateTime? createdAt;
+  @override
+  final DateTime? updatedAt;
+
+  @override
   String toString() {
-    return 'BoardModel(id: $id, name: $name, columns: $columns)';
+    return 'BoardModel(id: $id, title: $title, columns: $columns, isArchived: $isArchived, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -151,14 +207,26 @@ class _$BoardModelImpl implements _BoardModel {
         (other.runtimeType == runtimeType &&
             other is _$BoardModelImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            const DeepCollectionEquality().equals(other._columns, _columns));
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(other._columns, _columns) &&
+            (identical(other.isArchived, isArchived) ||
+                other.isArchived == isArchived) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, name, const DeepCollectionEquality().hash(_columns));
+      runtimeType,
+      id,
+      title,
+      const DeepCollectionEquality().hash(_columns),
+      isArchived,
+      createdAt,
+      updatedAt);
 
   @JsonKey(ignore: true)
   @override
@@ -175,10 +243,13 @@ class _$BoardModelImpl implements _BoardModel {
 }
 
 abstract class _BoardModel implements BoardModel {
-  factory _BoardModel(
+  const factory _BoardModel(
       {required final String id,
-      required final String name,
-      required final List<ColumnModel> columns}) = _$BoardModelImpl;
+      required final String title,
+      required final List<ColumnModel> columns,
+      final bool isArchived,
+      final DateTime? createdAt,
+      final DateTime? updatedAt}) = _$BoardModelImpl;
 
   factory _BoardModel.fromJson(Map<String, dynamic> json) =
       _$BoardModelImpl.fromJson;
@@ -186,9 +257,15 @@ abstract class _BoardModel implements BoardModel {
   @override
   String get id;
   @override
-  String get name;
+  String get title;
   @override
   List<ColumnModel> get columns;
+  @override
+  bool get isArchived;
+  @override
+  DateTime? get createdAt;
+  @override
+  DateTime? get updatedAt;
   @override
   @JsonKey(ignore: true)
   _$$BoardModelImplCopyWith<_$BoardModelImpl> get copyWith =>

@@ -7,10 +7,12 @@ part 'column_model.g.dart';
 @freezed
 class ColumnModel with _$ColumnModel {
   const factory ColumnModel({
-    required String id,
+    required int id,
     required String title,
-    //required int order,
+    required int order,
     @Default([]) List<TaskModel> tasks,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = _ColumnModel;
 
   factory ColumnModel.fromJson(Map<String, dynamic> json) =>

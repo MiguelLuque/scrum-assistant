@@ -6,12 +6,17 @@ part 'task_model.g.dart';
 @freezed
 class TaskModel with _$TaskModel {
   const factory TaskModel({
-    required String id,
+    required int id,
     required String title,
     String? description,
-    required String columnId,
+    DateTime? dueDate,
+    @Default([]) List<String> labels,
+    required int columnId,
+    @Default(false) bool isCompleted,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = _TaskModel;
 
   factory TaskModel.fromJson(Map<String, dynamic> json) =>
       _$TaskModelFromJson(json);
-} 
+}
