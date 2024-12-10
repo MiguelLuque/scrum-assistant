@@ -48,12 +48,16 @@ class BoardScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       return DragTarget<TaskModel>(
                         onAcceptWithDetails: (details) {
+                          final sourceColumnId = columns[ref
+                              .read(boardDragControllerProvider)
+                              .sourceColumnIndex!].id;
+
+                          final destinationColumnId = columns[index].id;
+
                           ref.read(boardNotifierProvider.notifier).moveTask(
                                 details.data,
-                                ref
-                                    .read(boardDragControllerProvider)
-                                    .sourceColumnIndex!,
-                                index,
+                                sourceColumnId,
+                                destinationColumnId,
                               );
                         },
                         builder: (context, candidateData, rejectedData) {

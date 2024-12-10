@@ -58,24 +58,23 @@ class BoardNotifier extends _$BoardNotifier {
     ];
   }
 
-  void moveTask(
-      TaskModel task, int sourceColumnIndex, int destinationColumnIndex) {
+  void moveTask(TaskModel task, int sourceColumnId, int destinationColumnId) {
     print(
-        'Moving task ${task.title} from column $sourceColumnIndex to column $destinationColumnIndex');
+        'Moving task ${task.title} from column $sourceColumnId to column $destinationColumnId');
 
-    if (sourceColumnIndex == destinationColumnIndex) {
+    if (sourceColumnId == destinationColumnId) {
       return;
     }
     state = state.map((column) {
-      if (column.id == state[sourceColumnIndex].id) {
-        print('Removing task ${task.title} from column $sourceColumnIndex');
+      if (column.id == sourceColumnId) {
+        print('Removing task ${task.title} from column $sourceColumnId');
         return column.copyWith(
           tasks: column.tasks.where((t) => t.id != task.id).toList(),
         );
       }
-      if (column.id == state[destinationColumnIndex].id) {
-        print('Adding task ${task.title} to column $destinationColumnIndex');
-        final updatedTask = task.copyWith(columnId: destinationColumnIndex);
+      if (column.id == destinationColumnId) {
+        print('Adding task ${task.title} to column $destinationColumnId');
+        final updatedTask = task.copyWith(columnId: destinationColumnId);
         return column.copyWith(
           tasks: [...column.tasks, updatedTask],
         );
@@ -170,7 +169,8 @@ class BoardNotifier extends _$BoardNotifier {
     return jsonEncode(state.map((column) => column.toJson()).toList());
   }
 
-  void moveTaskToColumn(int taskId, int sourceColumnId, int destinationColumnId) {
+  void moveTaskToColumn(
+      int taskId, int sourceColumnId, int destinationColumnId) {
     final task = state
         .firstWhere((column) => column.id == sourceColumnId)
         .tasks

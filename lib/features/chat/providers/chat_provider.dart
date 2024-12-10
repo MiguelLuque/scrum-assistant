@@ -28,7 +28,7 @@ class ChatNotifier extends _$ChatNotifier {
     final boardJson = ref.read(boardNotifierProvider.notifier).getBoardAsJson();
 
     final chatResponse = await OpenAI.instance.chat.create(
-      model: "gpt-4-turbo",
+      model: "gpt-4o-mini",
       messages: [
         OpenAIChatCompletionChoiceMessageModel(
           content: [
@@ -56,18 +56,7 @@ class ChatNotifier extends _$ChatNotifier {
         OpenAIToolModel(
           type: "function",
           function: OpenAIFunctionModel.withParameters(
-            name: "exampleTool",
-            parameters: [
-              OpenAIFunctionProperty.string(
-                name: "input",
-                description: "The input for the tool",
-              ),
-            ],
-          ),
-        ),
-        OpenAIToolModel(
-          type: "function",
-          function: OpenAIFunctionModel.withParameters(
+            
             name: "moveTask",
             description: "Moves a task from one column to another",
             parameters: [
@@ -123,7 +112,7 @@ class ChatNotifier extends _$ChatNotifier {
         toolCalls: assistantMessage.toolCalls
                 ?.map((toolCall) => OpenAIToolCall(
                       name: toolCall.function.name ?? '',
-                      arguments: toolCall.function.arguments ?? {},
+                      arguments: jsonDecode(toolCall.function.arguments) ?? {},
                     ))
                 .toList() ??
             [],
