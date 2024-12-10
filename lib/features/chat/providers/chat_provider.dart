@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:dart_openai/dart_openai.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:scrum_assistant/features/changelog/providers/changelog_provider.dart';
 import 'package:scrum_assistant/features/chat/models/chat_message.dart';
 import 'package:scrum_assistant/features/board/providers/board_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrum_assistant/features/chat/models/task_move_group.dart';
 
 part 'chat_provider.g.dart';
 
@@ -26,6 +28,8 @@ class ChatNotifier extends _$ChatNotifier {
     ];
 
     final boardJson = ref.read(boardNotifierProvider.notifier).getBoardAsJson();
+    final changelogJson =
+        ref.read(changelogNotifierProvider.notifier).getChangelogAsJson();
 
     final chatResponse = await OpenAI.instance.chat.create(
       model: "gpt-4o-mini",
@@ -33,7 +37,8 @@ class ChatNotifier extends _$ChatNotifier {
         OpenAIChatCompletionChoiceMessageModel(
           content: [
             OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              'Here is the current state of the Kanban board in JSON format:\n$boardJson',
+              'Here is the current state of the Kanban board in JSON format:\n$boardJson\n\n'
+              'And here is the changelog of the Kanban board in JSON format:\n$changelogJson',
             ),
           ],
           role: OpenAIChatMessageRole.system,
@@ -56,21 +61,29 @@ class ChatNotifier extends _$ChatNotifier {
         OpenAIToolModel(
           type: "function",
           function: OpenAIFunctionModel.withParameters(
-            
             name: "moveTask",
-            description: "Moves a task from one column to another",
+            description: "Moves multiple tasks to a destination column",
             parameters: [
-              OpenAIFunctionProperty.integer(
-                name: "taskId",
-                description: "The ID of the task to move",
-              ),
-              OpenAIFunctionProperty.integer(
-                name: "sourceColumnId",
-                description: "The ID of the source column",
-              ),
-              OpenAIFunctionProperty.integer(
-                name: "destinationColumnId",
-                description: "The ID of the destination column",
+              OpenAIFunctionProperty.array(
+                name: "taskMoveGroups",
+                description: "A list of task move groups",
+                items: OpenAIFunctionProperty.object(
+                  name: "taskMoveGroup",
+                  properties: [
+                    OpenAIFunctionProperty.array(
+                      name: "taskIds",
+                      description: "The IDs of the tasks to move",
+                      items: OpenAIFunctionProperty.integer(
+                        name: "taskId",
+                        description: "The ID of the task to move",
+                      ),
+                    ),
+                    OpenAIFunctionProperty.integer(
+                      name: "destinationColumnId",
+                      description: "The ID of the destination column",
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -89,15 +102,31 @@ class ChatNotifier extends _$ChatNotifier {
         }
         if (toolCall.function.name == "moveTask") {
           final decodedArgs = jsonDecode(toolCall.function.arguments);
-          final int taskId = decodedArgs["taskId"];
-          final int sourceColumnId = decodedArgs["sourceColumnId"];
-          final int destinationColumnId = decodedArgs["destinationColumnId"];
+          final List<dynamic> taskMoveGroupsJson =
+              decodedArgs["taskMoveGroups"];
 
-          ref.read(boardNotifierProvider.notifier).moveTaskToColumn(
-                taskId,
-                sourceColumnId,
-                destinationColumnId,
-              );
+          final List<TaskMoveGroup> taskMoveGroups =
+              taskMoveGroupsJson.map((json) {
+            return TaskMoveGroup(
+              taskIds: List<int>.from(json["taskIds"]),
+              destinationColumnId: json["destinationColumnId"],
+            );
+          }).toList();
+
+          for (final taskMoveGroup in taskMoveGroups) {
+            for (final taskId in taskMoveGroup.taskIds) {
+              final task = ref
+                  .read(boardNotifierProvider)
+                  .expand((column) => column.tasks)
+                  .firstWhere((task) => task.id == taskId);
+
+              ref.read(boardNotifierProvider.notifier).moveTask(
+                    task,
+                    task.columnId,
+                    taskMoveGroup.destinationColumnId,
+                  );
+            }
+          }
         }
       }
     }

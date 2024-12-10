@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:scrum_assistant/features/changelog/providers/changelog_provider.dart';
 import '../models/column_model.dart';
 import '../models/task_model.dart';
 import 'dart:convert';
@@ -83,6 +84,15 @@ class BoardNotifier extends _$BoardNotifier {
     }).toList();
 
     print('Task moved successfully.');
+
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+      'moveTask',
+      {
+        'taskId': task.id,
+        'sourceColumnId': sourceColumnId,
+        'destinationColumnId': destinationColumnId,
+      },
+    );
   }
 
   void addTask(int columnId, String title, String? description) {
@@ -104,6 +114,15 @@ class BoardNotifier extends _$BoardNotifier {
     }).toList();
 
     print('Task $title added successfully.');
+
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+      'addTask',
+      {
+        'columnId': columnId,
+        'title': title,
+        'description': description,
+      },
+    );
   }
 
   void deleteTask(String columnId, String taskId) {
@@ -118,6 +137,14 @@ class BoardNotifier extends _$BoardNotifier {
     }).toList();
 
     print('Task $taskId deleted successfully.');
+
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+      'deleteTask',
+      {
+        'columnId': columnId,
+        'taskId': taskId,
+      },
+    );
   }
 
   void reorderTasks(int columnId, int oldIndex, int newIndex) {
