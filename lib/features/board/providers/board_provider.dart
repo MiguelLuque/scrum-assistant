@@ -125,7 +125,29 @@ class BoardNotifier extends _$BoardNotifier {
     );
   }
 
-  void deleteTask(String columnId, String taskId) {
+  void addTaskAction(TaskModel newTask) {
+    state = state.map((column) {
+      if (column.id == newTask.columnId) {
+        return column.copyWith(
+          tasks: [...column.tasks, newTask],
+        );
+      }
+      return column;
+    }).toList();
+
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+          'addTask',
+          newTask.toJson(),
+        );
+  }
+
+  void deleteTask(int columnId, int taskId) {
+    //busca la task
+    final taskToDelete = state
+        .firstWhere((column) => column.id == columnId)
+        .tasks
+        .firstWhere((task) => task.id == taskId);
+
     print('Deleting task $taskId from column $columnId');
     state = state.map((column) {
       if (column.id == columnId) {
@@ -139,12 +161,9 @@ class BoardNotifier extends _$BoardNotifier {
     print('Task $taskId deleted successfully.');
 
     ref.read(changelogNotifierProvider.notifier).addEntry(
-      'deleteTask',
-      {
-        'columnId': columnId,
-        'taskId': taskId,
-      },
-    );
+          'deleteTask',
+          taskToDelete.toJson(),
+        );
   }
 
   void reorderTasks(int columnId, int oldIndex, int newIndex) {
@@ -171,7 +190,7 @@ class BoardNotifier extends _$BoardNotifier {
   }
 
   void moveTaskToPosition(
-    String fromColumnId,
+    int fromColumnId,
     int toColumnId,
     TaskModel task,
     int newIndex,
@@ -196,13 +215,37 @@ class BoardNotifier extends _$BoardNotifier {
     return jsonEncode(state.map((column) => column.toJson()).toList());
   }
 
-  void moveTaskToColumn(
-      int taskId, int sourceColumnId, int destinationColumnId) {
-    final task = state
-        .firstWhere((column) => column.id == sourceColumnId)
+  void updateTask(TaskModel updatedTask) {
+    // Obtener la tarea actual antes de actualizarla
+    final currentTask = state
+        .firstWhere((column) => column.id == updatedTask.columnId)
         .tasks
-        .firstWhere((task) => task.id == taskId);
+        .firstWhere((task) => task.id == updatedTask.id);
 
-    moveTask(task, sourceColumnId, destinationColumnId);
+    // Actualizar el estado
+    state = state.map((column) {
+      if (column.id == updatedTask.columnId) {
+        return column.copyWith(
+          tasks: column.tasks.map((task) {
+            if (task.id == updatedTask.id) {
+              return updatedTask.copyWith(
+                updatedAt: DateTime.now(),
+              );
+            }
+            return task;
+          }).toList(),
+        );
+      }
+      return column;
+    }).toList();
+
+    // Registrar en el changelog el estado anterior y el nuevo
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+      'updateTask',
+      {
+        'oldTask': currentTask.toJson(),
+        'updatedTask': updatedTask.toJson(),
+      },
+    );
   }
 }

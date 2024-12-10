@@ -62,7 +62,7 @@ class BoardScreen extends ConsumerWidget {
                         },
                         builder: (context, candidateData, rejectedData) {
                           return Padding(
-                            padding: EdgeInsets.all(AppTheme.spacing_md),
+                            padding: const EdgeInsets.all(AppTheme.spacing_md),
                             child: KanbanColumnWidget(
                               column: columns[index],
                             ),
