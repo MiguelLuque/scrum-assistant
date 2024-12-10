@@ -10,20 +10,32 @@ _$ChatMessageImpl _$$ChatMessageImplFromJson(Map<String, dynamic> json) =>
     _$ChatMessageImpl(
       id: json['id'] as String,
       content: json['content'] as String,
-      role: json['role'] as String,
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
-      functionCall: json['functionCall'] as String?,
-      functionResponse: json['functionResponse'] as String?,
+      isUser: json['isUser'] as bool,
+      hasToolCalls: json['hasToolCalls'] as bool? ?? false,
+      toolCalls: (json['toolCalls'] as List<dynamic>?)
+              ?.map((e) => OpenAIToolCall.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$ChatMessageImplToJson(_$ChatMessageImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'content': instance.content,
-      'role': instance.role,
-      'timestamp': instance.timestamp?.toIso8601String(),
-      'functionCall': instance.functionCall,
-      'functionResponse': instance.functionResponse,
+      'isUser': instance.isUser,
+      'hasToolCalls': instance.hasToolCalls,
+      'toolCalls': instance.toolCalls,
+    };
+
+_$OpenAIToolCallImpl _$$OpenAIToolCallImplFromJson(Map<String, dynamic> json) =>
+    _$OpenAIToolCallImpl(
+      name: json['name'] as String,
+      arguments: json['arguments'] as Map<String, dynamic>,
+    );
+
+Map<String, dynamic> _$$OpenAIToolCallImplToJson(
+        _$OpenAIToolCallImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'arguments': instance.arguments,
     };

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrum_assistant/controllers/board_drag_controller.dart';
+import 'package:scrum_assistant/features/chat/widgets/chat_bottom_sheet.dart';
 import 'package:scrum_assistant/theme/app_theme.dart';
 import 'package:scrum_assistant/widgets/kanban_column.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -27,7 +28,12 @@ class BoardScreen extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.auto_awesome_sharp),
                 onPressed: () {
-                  // TODO: Implement add task dialog
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => const ChatBottomSheet(),
+                  );
                 },
               ),
             ]),

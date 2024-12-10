@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/column_model.dart';
 import '../models/task_model.dart';
+import 'dart:convert';
 
 part 'board_provider.g.dart';
 
@@ -163,5 +164,18 @@ class BoardNotifier extends _$BoardNotifier {
       }
       return column;
     }).toList();
+  }
+
+  String getBoardAsJson() {
+    return jsonEncode(state.map((column) => column.toJson()).toList());
+  }
+
+  void moveTaskToColumn(int taskId, int sourceColumnId, int destinationColumnId) {
+    final task = state
+        .firstWhere((column) => column.id == sourceColumnId)
+        .tasks
+        .firstWhere((task) => task.id == taskId);
+
+    moveTask(task, sourceColumnId, destinationColumnId);
   }
 }
