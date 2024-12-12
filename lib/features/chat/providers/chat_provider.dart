@@ -10,13 +10,13 @@ import 'package:scrum_assistant/features/chat/tools/chat_tools.dart';
 
 part 'chat_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class VoiceMode extends _$VoiceMode {
   @override
   bool build() => false;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ChatNotifier extends _$ChatNotifier {
   bool _isProcessing = false;
 
@@ -100,6 +100,16 @@ class ChatNotifier extends _$ChatNotifier {
               [],
         ),
       ];
+    } catch (e) {
+      state = [
+        ...state,
+        ChatMessage(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          content: 'Ups! Algo salió mal. Intenta nuevamente.',
+          isUser: false,
+        ),
+      ];
+      print('Error sending message: $e');
     } finally {
       _isProcessing = false;
     }
