@@ -14,6 +14,10 @@ part 'chat_provider.g.dart';
 class VoiceMode extends _$VoiceMode {
   @override
   bool build() => false;
+
+  void switchVoiceMode() {
+    state = !state;
+  }
 }
 
 @Riverpod(keepAlive: true)
