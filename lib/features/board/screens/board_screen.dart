@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrum_assistant/controllers/board_drag_controller.dart';
 import 'package:scrum_assistant/features/chat/widgets/chat_bottom_sheet.dart';
+import 'package:scrum_assistant/providers/overlay_controller.dart';
 import 'package:scrum_assistant/providers/voice_assistant.dart';
 import 'package:scrum_assistant/theme/app_theme.dart';
 import 'package:scrum_assistant/widgets/kanban_column.dart';
@@ -17,7 +18,8 @@ class BoardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final columns = ref.watch(boardNotifierProvider);
-    final assistantState = ref.watch(voiceAssistantProvider);
+
+    final isOverlayVisible = ref.watch(overlayControllerProvider);
 
     final pageController = PageController();
 
@@ -28,13 +30,9 @@ class BoardScreen extends ConsumerWidget {
           //round button with app theme color and gradient
           backgroundColor: AppTheme.primaryColor,
           onPressed: () {
-            if (assistantState == AssistantState.idle) {
-              ref.read(voiceAssistantProvider.notifier).startListening(ref);
-            } else {
-              ref.read(voiceAssistantProvider.notifier).stopListening();
-            }
+            ref.read(overlayControllerProvider.notifier).switchOverlayMode();
           },
-          child: assistantState == AssistantState.idle
+          child: !isOverlayVisible
               ? const Icon(Icons.auto_awesome)
               : const Icon(Icons.close),
         ),
@@ -131,8 +129,7 @@ class BoardScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            if (assistantState == AssistantState.listening)
-              const VoiceAssistantOverlay(),
+            if (isOverlayVisible) const VoiceAssistantOverlay(),
           ],
         ),
       ),

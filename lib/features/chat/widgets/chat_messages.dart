@@ -3,6 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrum_assistant/features/chat/providers/chat_provider.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_highlight/flutter_highlight.dart';
+import 'package:flutter_highlight/themes/atom-one-dark.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class ChatMessages extends HookConsumerWidget {
   const ChatMessages({super.key});
@@ -86,14 +90,7 @@ class ChatMessages extends HookConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SelectableText(
-                        message.content,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: isUser
-                              ? theme.colorScheme.onPrimary
-                              : theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
+                      _buildMessageContent(message.content, isUser, theme),
                       if (message.hasToolCalls) ...[
                         const SizedBox(height: 4),
                         Text(
@@ -137,5 +134,102 @@ class ChatMessages extends HookConsumerWidget {
             : theme.colorScheme.onSecondaryContainer,
       ),
     );
+  }
+
+  Widget _buildMessageContent(String content, bool isUser, ThemeData theme) {
+    // Detectar si el contenido tiene bloques de código
+    if (content.contains('```')) {
+      return _buildFormattedContent(content, isUser, theme);
+    }
+
+    return SelectableText(
+      content,
+      style: theme.textTheme.bodyLarge?.copyWith(
+        color: isUser
+            ? theme.colorScheme.onPrimary
+            : theme.colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+
+  Widget _buildFormattedContent(String content, bool isUser, ThemeData theme) {
+    return MarkdownBody(
+      data: content,
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        p: theme.textTheme.bodyLarge?.copyWith(
+          color: isUser
+              ? theme.colorScheme.onPrimary
+              : theme.colorScheme.onSurfaceVariant,
+        ),
+        code: theme.textTheme.bodyMedium?.copyWith(
+          backgroundColor: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+          fontFamily: 'monospace',
+        ),
+        codeblockDecoration: BoxDecoration(
+          color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      builders: {
+        'code': CustomCodeBlockBuilder(
+          textColor: theme.colorScheme.onSurfaceVariant,
+        ),
+      },
+    );
+  }
+}
+
+class CustomCodeBlockBuilder extends MarkdownElementBuilder {
+  final Color textColor;
+
+  CustomCodeBlockBuilder({required this.textColor});
+
+  @override
+  Widget? visitElementAfterWithContext(
+    BuildContext context,
+    md.Element element,
+    TextStyle? preferredStyle,
+    TextStyle? parentStyle,
+  ) {
+    if (element.tag == 'code') {
+      String language = '';
+      String code = element.textContent;
+
+      // Extraer el lenguaje si está especificado
+      if (element.textContent.contains('\n')) {
+        final firstLine = element.textContent.split('\n').first;
+        if (firstLine.startsWith('```')) {
+          language = firstLine.substring(3).trim();
+          code = element.textContent
+              .substring(firstLine.length + 1)
+              .replaceAll('```', '')
+              .trim();
+        }
+      }
+
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color:
+              const Color(0xFF282C34), // Color de fondo del tema Atom One Dark
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: HighlightView(
+            code,
+            language: language.isEmpty ? 'dart' : language,
+            theme: atomOneDarkTheme,
+            padding: const EdgeInsets.all(12),
+            textStyle: const TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 14,
+            ),
+          ),
+        ),
+      );
+    }
+    return null;
   }
 }
