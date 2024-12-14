@@ -19,19 +19,19 @@ class ChatMessages extends HookConsumerWidget {
     final scrollController = useScrollController();
     final theme = Theme.of(context);
 
-    // Efecto para auto-scroll
-    useEffect(() {
-      if (messages.isNotEmpty) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          scrollController.animateTo(
-            scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-          );
-        });
-      }
-      return null;
-    }, [messages.length]);
+    // Efecto para auto-scroll al último mensaje cuando se agrega uno nuevo
+    // useEffect(() {
+    //   if (messages.isNotEmpty) {
+    //     Future.delayed(const Duration(milliseconds: 100), () {
+    //       scrollController.animateTo(
+    //         0, // Desplazarse al inicio de la lista (último mensaje)
+    //         duration: const Duration(milliseconds: 200),
+    //         curve: Curves.easeOut,
+    //       );
+    //     });
+    //   }
+    //   return null;
+    // }, [messages.length]);
 
     // Efecto para TTS
     useEffect(() {
@@ -50,10 +50,13 @@ class ChatMessages extends HookConsumerWidget {
 
     return ListView.builder(
       controller: scrollController,
+      reverse:
+          true, // Invertir la lista para mostrar los mensajes más recientes primero
       padding: const EdgeInsets.symmetric(vertical: 16),
       itemCount: messages.length,
       itemBuilder: (context, index) {
-        final message = messages[index];
+        final message = messages[
+            messages.length - 1 - index]; // Obtener el mensaje en orden inverso
         final isUser = message.isUser;
 
         return Padding(
@@ -75,7 +78,7 @@ class ChatMessages extends HookConsumerWidget {
                   decoration: BoxDecoration(
                     color: isUser
                         ? theme.colorScheme.primary
-                        : theme.colorScheme.surfaceVariant,
+                        : theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(20),
                       topRight: const Radius.circular(20),

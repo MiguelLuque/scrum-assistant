@@ -28,66 +28,77 @@ class ChatBottomSheet extends HookConsumerWidget {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: Column(
-            children: [
-              // Handle bar con diseño más moderno
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                width: 48,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurface.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(3),
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Column(
+              children: [
+                // Handle bar con diseño más moderno
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 12),
+                  width: 48,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.onSurface.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
                 ),
-              ),
-              // Header mejorado
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 4, 12, 16),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.smart_toy_rounded,
-                      color: theme.colorScheme.primary,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Chat Assistant',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                // Header mejorado
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 4, 12, 16),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.smart_toy_rounded,
+                        color: theme.colorScheme.primary,
                       ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: Icon(
-                        Icons.close_rounded,
-                        color: theme.colorScheme.onSurfaceVariant,
+                      const SizedBox(width: 12),
+                      Text(
+                        'Chat Assistant',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      style: IconButton.styleFrom(
-                        backgroundColor: theme.colorScheme.surfaceVariant,
-                        padding: const EdgeInsets.all(8),
+                      const Spacer(),
+                      IconButton(
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        style: IconButton.styleFrom(
+                          backgroundColor: theme.colorScheme.surfaceVariant,
+                          padding: const EdgeInsets.all(8),
+                        ),
+                        onPressed: () => Navigator.pop(context),
                       ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Divider(
-                color: theme.colorScheme.outlineVariant,
-                height: 1,
-              ),
-              // Messages con padding
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: ChatMessages(),
+                Divider(
+                  color: theme.colorScheme.outlineVariant,
+                  height: 1,
                 ),
-              ),
-              // Input con padding
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
-                child: ChatInput(),
-              ),
-            ],
+                // Messages con padding
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: NotificationListener<ScrollNotification>(
+                      onNotification: (notification) {
+                        FocusScope.of(context).unfocus();
+                        return false;
+                      },
+                      child: const ChatMessages(),
+                    ),
+                  ),
+                ),
+                // Input con padding
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  child: ChatInput(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

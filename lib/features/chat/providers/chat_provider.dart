@@ -91,7 +91,7 @@ class ChatNotifier extends _$ChatNotifier {
         ...state,
         ChatMessage(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
-          content: assistantMessage.content?.first.text ?? '',
+          content: assistantMessage.content?.first.text ?? 'Hecho',
           isUser: false,
           hasToolCalls: assistantMessage.haveToolCalls,
           toolCalls: assistantMessage.toolCalls
