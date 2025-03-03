@@ -20,15 +20,25 @@ ColumnModel _$ColumnModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ColumnModel {
+  @HiveField(0)
   int get id => throw _privateConstructorUsedError;
+  @HiveField(1)
   String get title => throw _privateConstructorUsedError;
+  @HiveField(2)
   int get order => throw _privateConstructorUsedError;
+  @HiveField(3)
   List<TaskModel> get tasks => throw _privateConstructorUsedError;
+  @HiveField(4)
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @HiveField(5)
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this ColumnModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ColumnModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ColumnModelCopyWith<ColumnModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -40,12 +50,12 @@ abstract class $ColumnModelCopyWith<$Res> {
       _$ColumnModelCopyWithImpl<$Res, ColumnModel>;
   @useResult
   $Res call(
-      {int id,
-      String title,
-      int order,
-      List<TaskModel> tasks,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@HiveField(0) int id,
+      @HiveField(1) String title,
+      @HiveField(2) int order,
+      @HiveField(3) List<TaskModel> tasks,
+      @HiveField(4) DateTime? createdAt,
+      @HiveField(5) DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -58,6 +68,8 @@ class _$ColumnModelCopyWithImpl<$Res, $Val extends ColumnModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ColumnModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -106,12 +118,12 @@ abstract class _$$ColumnModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      String title,
-      int order,
-      List<TaskModel> tasks,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@HiveField(0) int id,
+      @HiveField(1) String title,
+      @HiveField(2) int order,
+      @HiveField(3) List<TaskModel> tasks,
+      @HiveField(4) DateTime? createdAt,
+      @HiveField(5) DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -122,6 +134,8 @@ class __$$ColumnModelImplCopyWithImpl<$Res>
       _$ColumnModelImpl _value, $Res Function(_$ColumnModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ColumnModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -165,26 +179,30 @@ class __$$ColumnModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ColumnModelImpl implements _ColumnModel {
   const _$ColumnModelImpl(
-      {required this.id,
-      required this.title,
-      required this.order,
-      final List<TaskModel> tasks = const [],
-      this.createdAt,
-      this.updatedAt})
+      {@HiveField(0) required this.id,
+      @HiveField(1) required this.title,
+      @HiveField(2) required this.order,
+      @HiveField(3) final List<TaskModel> tasks = const [],
+      @HiveField(4) this.createdAt,
+      @HiveField(5) this.updatedAt})
       : _tasks = tasks;
 
   factory _$ColumnModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ColumnModelImplFromJson(json);
 
   @override
+  @HiveField(0)
   final int id;
   @override
+  @HiveField(1)
   final String title;
   @override
+  @HiveField(2)
   final int order;
   final List<TaskModel> _tasks;
   @override
   @JsonKey()
+  @HiveField(3)
   List<TaskModel> get tasks {
     if (_tasks is EqualUnmodifiableListView) return _tasks;
     // ignore: implicit_dynamic_type
@@ -192,8 +210,10 @@ class _$ColumnModelImpl implements _ColumnModel {
   }
 
   @override
+  @HiveField(4)
   final DateTime? createdAt;
   @override
+  @HiveField(5)
   final DateTime? updatedAt;
 
   @override
@@ -216,12 +236,14 @@ class _$ColumnModelImpl implements _ColumnModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, title, order,
       const DeepCollectionEquality().hash(_tasks), createdAt, updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ColumnModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ColumnModelImplCopyWith<_$ColumnModelImpl> get copyWith =>
@@ -237,30 +259,39 @@ class _$ColumnModelImpl implements _ColumnModel {
 
 abstract class _ColumnModel implements ColumnModel {
   const factory _ColumnModel(
-      {required final int id,
-      required final String title,
-      required final int order,
-      final List<TaskModel> tasks,
-      final DateTime? createdAt,
-      final DateTime? updatedAt}) = _$ColumnModelImpl;
+      {@HiveField(0) required final int id,
+      @HiveField(1) required final String title,
+      @HiveField(2) required final int order,
+      @HiveField(3) final List<TaskModel> tasks,
+      @HiveField(4) final DateTime? createdAt,
+      @HiveField(5) final DateTime? updatedAt}) = _$ColumnModelImpl;
 
   factory _ColumnModel.fromJson(Map<String, dynamic> json) =
       _$ColumnModelImpl.fromJson;
 
   @override
+  @HiveField(0)
   int get id;
   @override
+  @HiveField(1)
   String get title;
   @override
+  @HiveField(2)
   int get order;
   @override
+  @HiveField(3)
   List<TaskModel> get tasks;
   @override
+  @HiveField(4)
   DateTime? get createdAt;
   @override
+  @HiveField(5)
   DateTime? get updatedAt;
+
+  /// Create a copy of ColumnModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ColumnModelImplCopyWith<_$ColumnModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

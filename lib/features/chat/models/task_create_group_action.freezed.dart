@@ -23,8 +23,12 @@ TaskCreateGroupAction _$TaskCreateGroupActionFromJson(
 mixin _$TaskCreateGroupAction {
   List<TaskModel> get tasks => throw _privateConstructorUsedError;
 
+  /// Serializes this TaskCreateGroupAction to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of TaskCreateGroupAction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TaskCreateGroupActionCopyWith<TaskCreateGroupAction> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +53,8 @@ class _$TaskCreateGroupActionCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TaskCreateGroupAction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -84,6 +90,8 @@ class __$$TaskCreateGroupActionImplCopyWithImpl<$Res>
       $Res Function(_$TaskCreateGroupActionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TaskCreateGroupAction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -128,12 +136,14 @@ class _$TaskCreateGroupActionImpl implements _TaskCreateGroupAction {
             const DeepCollectionEquality().equals(other._tasks, _tasks));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_tasks));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TaskCreateGroupAction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TaskCreateGroupActionImplCopyWith<_$TaskCreateGroupActionImpl>
@@ -157,8 +167,11 @@ abstract class _TaskCreateGroupAction implements TaskCreateGroupAction {
 
   @override
   List<TaskModel> get tasks;
+
+  /// Create a copy of TaskCreateGroupAction
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TaskCreateGroupActionImplCopyWith<_$TaskCreateGroupActionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
