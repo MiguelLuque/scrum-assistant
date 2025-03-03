@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:scrum_assistant/features/changelog/providers/changelog_provider.dart';
 import '../models/column_model.dart';
 import '../models/task_model.dart';
 import 'dart:convert';
@@ -19,12 +20,16 @@ class BoardNotifier extends _$BoardNotifier {
             title: 'task 1',
             description: 'Add user login and registration',
             columnId: 1,
+            isCompleted: false,
+            dueDate: DateTime.now().add(const Duration(days: 1)),
+            labels: ['label 1', 'label 2'],
           ),
           TaskModel(
             id: 2,
             title: 'task 2',
             description: 'Create wireframes for main dashboard',
             columnId: 1,
+            isCompleted: true,
           ),
         ],
         order: 1,
@@ -58,24 +63,23 @@ class BoardNotifier extends _$BoardNotifier {
     ];
   }
 
-  void moveTask(
-      TaskModel task, int sourceColumnIndex, int destinationColumnIndex) {
+  void moveTask(TaskModel task, int sourceColumnId, int destinationColumnId) {
     print(
-        'Moving task ${task.title} from column $sourceColumnIndex to column $destinationColumnIndex');
+        'Moving task ${task.title} from column $sourceColumnId to column $destinationColumnId');
 
-    if (sourceColumnIndex == destinationColumnIndex) {
+    if (sourceColumnId == destinationColumnId) {
       return;
     }
     state = state.map((column) {
-      if (column.id == state[sourceColumnIndex].id) {
-        print('Removing task ${task.title} from column $sourceColumnIndex');
+      if (column.id == sourceColumnId) {
+        print('Removing task ${task.title} from column $sourceColumnId');
         return column.copyWith(
           tasks: column.tasks.where((t) => t.id != task.id).toList(),
         );
       }
-      if (column.id == state[destinationColumnIndex].id) {
-        print('Adding task ${task.title} to column $destinationColumnIndex');
-        final updatedTask = task.copyWith(columnId: destinationColumnIndex);
+      if (column.id == destinationColumnId) {
+        print('Adding task ${task.title} to column $destinationColumnId');
+        final updatedTask = task.copyWith(columnId: destinationColumnId);
         return column.copyWith(
           tasks: [...column.tasks, updatedTask],
         );
@@ -84,6 +88,15 @@ class BoardNotifier extends _$BoardNotifier {
     }).toList();
 
     print('Task moved successfully.');
+
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+      'moveTask',
+      {
+        'taskId': task.id,
+        'sourceColumnId': sourceColumnId,
+        'destinationColumnId': destinationColumnId,
+      },
+    );
   }
 
   void addTask(int columnId, String title, String? description) {
@@ -105,9 +118,40 @@ class BoardNotifier extends _$BoardNotifier {
     }).toList();
 
     print('Task $title added successfully.');
+
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+      'addTask',
+      {
+        'columnId': columnId,
+        'title': title,
+        'description': description,
+      },
+    );
   }
 
-  void deleteTask(String columnId, String taskId) {
+  void addTaskAction(TaskModel newTask) {
+    state = state.map((column) {
+      if (column.id == newTask.columnId) {
+        return column.copyWith(
+          tasks: [...column.tasks, newTask],
+        );
+      }
+      return column;
+    }).toList();
+
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+          'addTask',
+          newTask.toJson(),
+        );
+  }
+
+  void deleteTask(int columnId, int taskId) {
+    //busca la task
+    final taskToDelete = state
+        .firstWhere((column) => column.id == columnId)
+        .tasks
+        .firstWhere((task) => task.id == taskId);
+
     print('Deleting task $taskId from column $columnId');
     state = state.map((column) {
       if (column.id == columnId) {
@@ -119,6 +163,11 @@ class BoardNotifier extends _$BoardNotifier {
     }).toList();
 
     print('Task $taskId deleted successfully.');
+
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+          'deleteTask',
+          taskToDelete.toJson(),
+        );
   }
 
   void reorderTasks(int columnId, int oldIndex, int newIndex) {
@@ -145,7 +194,7 @@ class BoardNotifier extends _$BoardNotifier {
   }
 
   void moveTaskToPosition(
-    String fromColumnId,
+    int fromColumnId,
     int toColumnId,
     TaskModel task,
     int newIndex,
@@ -170,12 +219,37 @@ class BoardNotifier extends _$BoardNotifier {
     return jsonEncode(state.map((column) => column.toJson()).toList());
   }
 
-  void moveTaskToColumn(int taskId, int sourceColumnId, int destinationColumnId) {
-    final task = state
-        .firstWhere((column) => column.id == sourceColumnId)
+  void updateTask(TaskModel updatedTask) {
+    // Obtener la tarea actual antes de actualizarla
+    final currentTask = state
+        .firstWhere((column) => column.id == updatedTask.columnId)
         .tasks
-        .firstWhere((task) => task.id == taskId);
+        .firstWhere((task) => task.id == updatedTask.id);
 
-    moveTask(task, sourceColumnId, destinationColumnId);
+    // Actualizar el estado
+    state = state.map((column) {
+      if (column.id == updatedTask.columnId) {
+        return column.copyWith(
+          tasks: column.tasks.map((task) {
+            if (task.id == updatedTask.id) {
+              return updatedTask.copyWith(
+                updatedAt: DateTime.now(),
+              );
+            }
+            return task;
+          }).toList(),
+        );
+      }
+      return column;
+    }).toList();
+
+    // Registrar en el changelog el estado anterior y el nuevo
+    ref.read(changelogNotifierProvider.notifier).addEntry(
+      'updateTask',
+      {
+        'oldTask': currentTask.toJson(),
+        'updatedTask': updatedTask.toJson(),
+      },
+    );
   }
 }

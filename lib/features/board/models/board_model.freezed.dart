@@ -20,15 +20,25 @@ BoardModel _$BoardModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$BoardModel {
+  @HiveField(0)
   String get id => throw _privateConstructorUsedError;
+  @HiveField(1)
   String get title => throw _privateConstructorUsedError;
+  @HiveField(2)
   List<ColumnModel> get columns => throw _privateConstructorUsedError;
+  @HiveField(3)
   bool get isArchived => throw _privateConstructorUsedError;
+  @HiveField(4)
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @HiveField(5)
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this BoardModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of BoardModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BoardModelCopyWith<BoardModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -40,12 +50,12 @@ abstract class $BoardModelCopyWith<$Res> {
       _$BoardModelCopyWithImpl<$Res, BoardModel>;
   @useResult
   $Res call(
-      {String id,
-      String title,
-      List<ColumnModel> columns,
-      bool isArchived,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@HiveField(0) String id,
+      @HiveField(1) String title,
+      @HiveField(2) List<ColumnModel> columns,
+      @HiveField(3) bool isArchived,
+      @HiveField(4) DateTime? createdAt,
+      @HiveField(5) DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -58,6 +68,8 @@ class _$BoardModelCopyWithImpl<$Res, $Val extends BoardModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of BoardModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -106,12 +118,12 @@ abstract class _$$BoardModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String title,
-      List<ColumnModel> columns,
-      bool isArchived,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@HiveField(0) String id,
+      @HiveField(1) String title,
+      @HiveField(2) List<ColumnModel> columns,
+      @HiveField(3) bool isArchived,
+      @HiveField(4) DateTime? createdAt,
+      @HiveField(5) DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -122,6 +134,8 @@ class __$$BoardModelImplCopyWithImpl<$Res>
       _$BoardModelImpl _value, $Res Function(_$BoardModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of BoardModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -165,23 +179,26 @@ class __$$BoardModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$BoardModelImpl implements _BoardModel {
   const _$BoardModelImpl(
-      {required this.id,
-      required this.title,
-      required final List<ColumnModel> columns,
-      this.isArchived = false,
-      this.createdAt,
-      this.updatedAt})
+      {@HiveField(0) required this.id,
+      @HiveField(1) required this.title,
+      @HiveField(2) required final List<ColumnModel> columns,
+      @HiveField(3) this.isArchived = false,
+      @HiveField(4) this.createdAt,
+      @HiveField(5) this.updatedAt})
       : _columns = columns;
 
   factory _$BoardModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$BoardModelImplFromJson(json);
 
   @override
+  @HiveField(0)
   final String id;
   @override
+  @HiveField(1)
   final String title;
   final List<ColumnModel> _columns;
   @override
+  @HiveField(2)
   List<ColumnModel> get columns {
     if (_columns is EqualUnmodifiableListView) return _columns;
     // ignore: implicit_dynamic_type
@@ -190,10 +207,13 @@ class _$BoardModelImpl implements _BoardModel {
 
   @override
   @JsonKey()
+  @HiveField(3)
   final bool isArchived;
   @override
+  @HiveField(4)
   final DateTime? createdAt;
   @override
+  @HiveField(5)
   final DateTime? updatedAt;
 
   @override
@@ -217,7 +237,7 @@ class _$BoardModelImpl implements _BoardModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -228,7 +248,9 @@ class _$BoardModelImpl implements _BoardModel {
       createdAt,
       updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BoardModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$BoardModelImplCopyWith<_$BoardModelImpl> get copyWith =>
@@ -244,30 +266,39 @@ class _$BoardModelImpl implements _BoardModel {
 
 abstract class _BoardModel implements BoardModel {
   const factory _BoardModel(
-      {required final String id,
-      required final String title,
-      required final List<ColumnModel> columns,
-      final bool isArchived,
-      final DateTime? createdAt,
-      final DateTime? updatedAt}) = _$BoardModelImpl;
+      {@HiveField(0) required final String id,
+      @HiveField(1) required final String title,
+      @HiveField(2) required final List<ColumnModel> columns,
+      @HiveField(3) final bool isArchived,
+      @HiveField(4) final DateTime? createdAt,
+      @HiveField(5) final DateTime? updatedAt}) = _$BoardModelImpl;
 
   factory _BoardModel.fromJson(Map<String, dynamic> json) =
       _$BoardModelImpl.fromJson;
 
   @override
+  @HiveField(0)
   String get id;
   @override
+  @HiveField(1)
   String get title;
   @override
+  @HiveField(2)
   List<ColumnModel> get columns;
   @override
+  @HiveField(3)
   bool get isArchived;
   @override
+  @HiveField(4)
   DateTime? get createdAt;
   @override
+  @HiveField(5)
   DateTime? get updatedAt;
+
+  /// Create a copy of BoardModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$BoardModelImplCopyWith<_$BoardModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -26,8 +26,12 @@ mixin _$ChatMessage {
   bool get hasToolCalls => throw _privateConstructorUsedError;
   List<OpenAIToolCall> get toolCalls => throw _privateConstructorUsedError;
 
+  /// Serializes this ChatMessage to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ChatMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ChatMessageCopyWith<ChatMessage> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -56,6 +60,8 @@ class _$ChatMessageCopyWithImpl<$Res, $Val extends ChatMessage>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ChatMessage
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -114,6 +120,8 @@ class __$$ChatMessageImplCopyWithImpl<$Res>
       _$ChatMessageImpl _value, $Res Function(_$ChatMessageImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ChatMessage
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -199,12 +207,14 @@ class _$ChatMessageImpl implements _ChatMessage {
                 .equals(other._toolCalls, _toolCalls));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, content, isUser,
       hasToolCalls, const DeepCollectionEquality().hash(_toolCalls));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ChatMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ChatMessageImplCopyWith<_$ChatMessageImpl> get copyWith =>
@@ -239,8 +249,11 @@ abstract class _ChatMessage implements ChatMessage {
   bool get hasToolCalls;
   @override
   List<OpenAIToolCall> get toolCalls;
+
+  /// Create a copy of ChatMessage
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ChatMessageImplCopyWith<_$ChatMessageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -254,8 +267,12 @@ mixin _$OpenAIToolCall {
   String get name => throw _privateConstructorUsedError;
   Map<String, dynamic> get arguments => throw _privateConstructorUsedError;
 
+  /// Serializes this OpenAIToolCall to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of OpenAIToolCall
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $OpenAIToolCallCopyWith<OpenAIToolCall> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -279,6 +296,8 @@ class _$OpenAIToolCallCopyWithImpl<$Res, $Val extends OpenAIToolCall>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of OpenAIToolCall
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -317,6 +336,8 @@ class __$$OpenAIToolCallImplCopyWithImpl<$Res>
       _$OpenAIToolCallImpl _value, $Res Function(_$OpenAIToolCallImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of OpenAIToolCall
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -371,12 +392,14 @@ class _$OpenAIToolCallImpl implements _OpenAIToolCall {
                 .equals(other._arguments, _arguments));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, name, const DeepCollectionEquality().hash(_arguments));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of OpenAIToolCall
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$OpenAIToolCallImplCopyWith<_$OpenAIToolCallImpl> get copyWith =>
@@ -403,8 +426,11 @@ abstract class _OpenAIToolCall implements OpenAIToolCall {
   String get name;
   @override
   Map<String, dynamic> get arguments;
+
+  /// Create a copy of OpenAIToolCall
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OpenAIToolCallImplCopyWith<_$OpenAIToolCallImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

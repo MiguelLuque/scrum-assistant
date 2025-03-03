@@ -20,18 +20,31 @@ TaskModel _$TaskModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TaskModel {
+  @HiveField(0)
   int get id => throw _privateConstructorUsedError;
+  @HiveField(1)
   String get title => throw _privateConstructorUsedError;
+  @HiveField(2)
   String? get description => throw _privateConstructorUsedError;
+  @HiveField(3)
   DateTime? get dueDate => throw _privateConstructorUsedError;
+  @HiveField(4)
   List<String> get labels => throw _privateConstructorUsedError;
+  @HiveField(5)
   int get columnId => throw _privateConstructorUsedError;
+  @HiveField(6)
   bool get isCompleted => throw _privateConstructorUsedError;
+  @HiveField(7)
   DateTime? get createdAt => throw _privateConstructorUsedError;
+  @HiveField(8)
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this TaskModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of TaskModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TaskModelCopyWith<TaskModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -42,15 +55,15 @@ abstract class $TaskModelCopyWith<$Res> {
       _$TaskModelCopyWithImpl<$Res, TaskModel>;
   @useResult
   $Res call(
-      {int id,
-      String title,
-      String? description,
-      DateTime? dueDate,
-      List<String> labels,
-      int columnId,
-      bool isCompleted,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@HiveField(0) int id,
+      @HiveField(1) String title,
+      @HiveField(2) String? description,
+      @HiveField(3) DateTime? dueDate,
+      @HiveField(4) List<String> labels,
+      @HiveField(5) int columnId,
+      @HiveField(6) bool isCompleted,
+      @HiveField(7) DateTime? createdAt,
+      @HiveField(8) DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -63,6 +76,8 @@ class _$TaskModelCopyWithImpl<$Res, $Val extends TaskModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TaskModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -126,15 +141,15 @@ abstract class _$$TaskModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      String title,
-      String? description,
-      DateTime? dueDate,
-      List<String> labels,
-      int columnId,
-      bool isCompleted,
-      DateTime? createdAt,
-      DateTime? updatedAt});
+      {@HiveField(0) int id,
+      @HiveField(1) String title,
+      @HiveField(2) String? description,
+      @HiveField(3) DateTime? dueDate,
+      @HiveField(4) List<String> labels,
+      @HiveField(5) int columnId,
+      @HiveField(6) bool isCompleted,
+      @HiveField(7) DateTime? createdAt,
+      @HiveField(8) DateTime? updatedAt});
 }
 
 /// @nodoc
@@ -145,6 +160,8 @@ class __$$TaskModelImplCopyWithImpl<$Res>
       _$TaskModelImpl _value, $Res Function(_$TaskModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TaskModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -203,31 +220,36 @@ class __$$TaskModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$TaskModelImpl implements _TaskModel {
   const _$TaskModelImpl(
-      {required this.id,
-      required this.title,
-      this.description,
-      this.dueDate,
-      final List<String> labels = const [],
-      required this.columnId,
-      this.isCompleted = false,
-      this.createdAt,
-      this.updatedAt})
+      {@HiveField(0) required this.id,
+      @HiveField(1) required this.title,
+      @HiveField(2) this.description,
+      @HiveField(3) this.dueDate,
+      @HiveField(4) final List<String> labels = const [],
+      @HiveField(5) required this.columnId,
+      @HiveField(6) this.isCompleted = false,
+      @HiveField(7) this.createdAt,
+      @HiveField(8) this.updatedAt})
       : _labels = labels;
 
   factory _$TaskModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$TaskModelImplFromJson(json);
 
   @override
+  @HiveField(0)
   final int id;
   @override
+  @HiveField(1)
   final String title;
   @override
+  @HiveField(2)
   final String? description;
   @override
+  @HiveField(3)
   final DateTime? dueDate;
   final List<String> _labels;
   @override
   @JsonKey()
+  @HiveField(4)
   List<String> get labels {
     if (_labels is EqualUnmodifiableListView) return _labels;
     // ignore: implicit_dynamic_type
@@ -235,13 +257,17 @@ class _$TaskModelImpl implements _TaskModel {
   }
 
   @override
+  @HiveField(5)
   final int columnId;
   @override
   @JsonKey()
+  @HiveField(6)
   final bool isCompleted;
   @override
+  @HiveField(7)
   final DateTime? createdAt;
   @override
+  @HiveField(8)
   final DateTime? updatedAt;
 
   @override
@@ -270,7 +296,7 @@ class _$TaskModelImpl implements _TaskModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -284,7 +310,9 @@ class _$TaskModelImpl implements _TaskModel {
       createdAt,
       updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TaskModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TaskModelImplCopyWith<_$TaskModelImpl> get copyWith =>
@@ -300,39 +328,51 @@ class _$TaskModelImpl implements _TaskModel {
 
 abstract class _TaskModel implements TaskModel {
   const factory _TaskModel(
-      {required final int id,
-      required final String title,
-      final String? description,
-      final DateTime? dueDate,
-      final List<String> labels,
-      required final int columnId,
-      final bool isCompleted,
-      final DateTime? createdAt,
-      final DateTime? updatedAt}) = _$TaskModelImpl;
+      {@HiveField(0) required final int id,
+      @HiveField(1) required final String title,
+      @HiveField(2) final String? description,
+      @HiveField(3) final DateTime? dueDate,
+      @HiveField(4) final List<String> labels,
+      @HiveField(5) required final int columnId,
+      @HiveField(6) final bool isCompleted,
+      @HiveField(7) final DateTime? createdAt,
+      @HiveField(8) final DateTime? updatedAt}) = _$TaskModelImpl;
 
   factory _TaskModel.fromJson(Map<String, dynamic> json) =
       _$TaskModelImpl.fromJson;
 
   @override
+  @HiveField(0)
   int get id;
   @override
+  @HiveField(1)
   String get title;
   @override
+  @HiveField(2)
   String? get description;
   @override
+  @HiveField(3)
   DateTime? get dueDate;
   @override
+  @HiveField(4)
   List<String> get labels;
   @override
+  @HiveField(5)
   int get columnId;
   @override
+  @HiveField(6)
   bool get isCompleted;
   @override
+  @HiveField(7)
   DateTime? get createdAt;
   @override
+  @HiveField(8)
   DateTime? get updatedAt;
+
+  /// Create a copy of TaskModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TaskModelImplCopyWith<_$TaskModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

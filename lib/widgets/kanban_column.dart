@@ -4,6 +4,7 @@ import 'package:scrum_assistant/controllers/board_drag_controller.dart';
 import 'package:scrum_assistant/features/board/models/column_model.dart';
 import 'package:scrum_assistant/features/board/models/task_model.dart';
 import 'package:scrum_assistant/features/board/providers/board_provider.dart';
+import 'package:scrum_assistant/features/board/screens/add_task_screen.dart';
 import 'package:scrum_assistant/theme/app_theme.dart';
 import 'task_card.dart';
 import 'add_task_dialog.dart';
@@ -101,9 +102,11 @@ class KanbanColumnWidget extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.add),
                 onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AddTaskDialog(columnId: column.id),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddTaskScreen(columnId: column.id),
+                    ),
                   );
                 },
                 tooltip: 'Add Task',
