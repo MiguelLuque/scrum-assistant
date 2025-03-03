@@ -13,6 +13,7 @@ class ChatInput extends HookConsumerWidget {
     final isComposing = useState(false);
     final theme = Theme.of(context);
     final chatNotifier = ref.watch(chatNotifierProvider.notifier);
+    final isTyping = chatNotifier.isTyping;
 
     return Row(
       children: [
@@ -26,8 +27,10 @@ class ChatInput extends HookConsumerWidget {
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.newline,
             style: theme.textTheme.bodyLarge,
+            enabled: !isTyping,
             decoration: InputDecoration(
-              hintText: 'Type a message...',
+              hintText:
+                  isTyping ? 'Waiting for response...' : 'Type a message...',
               hintStyle: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
               ),
@@ -41,7 +44,7 @@ class ChatInput extends HookConsumerWidget {
               isComposing.value = text.isNotEmpty;
             },
             onSubmitted: (text) {
-              if (text.isNotEmpty) {
+              if (text.isNotEmpty && !isTyping) {
                 _handleSubmit(text, controller, chatNotifier, ref);
               }
             },
@@ -53,7 +56,9 @@ class ChatInput extends HookConsumerWidget {
           child: IconButton.filled(
             icon: const Icon(Icons.send_rounded, size: 20),
             style: IconButton.styleFrom(
-              backgroundColor: theme.colorScheme.primary,
+              backgroundColor: isTyping || !isComposing.value
+                  ? theme.colorScheme.primary.withOpacity(0.5)
+                  : theme.colorScheme.primary,
               foregroundColor: theme.colorScheme.onPrimary,
               minimumSize: const Size(40, 40),
               shape: RoundedRectangleBorder(
@@ -61,30 +66,19 @@ class ChatInput extends HookConsumerWidget {
               ),
               elevation: 0,
               padding: const EdgeInsets.all(8),
-            ).copyWith(
-              foregroundColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.pressed)) {
-                  return theme.colorScheme.onPrimary.withOpacity(0.8);
-                }
-                return theme.colorScheme.onPrimary;
-              }),
-              backgroundColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.pressed)) {
-                  return theme.colorScheme.primary.withOpacity(0.8);
-                }
-                return theme.colorScheme.primary;
-              }),
             ),
-            onPressed: () {
-              if (controller.text.isNotEmpty) {
-                _handleSubmit(
-                  controller.text,
-                  controller,
-                  chatNotifier,
-                  ref,
-                );
-              }
-            },
+            onPressed: (isTyping || !isComposing.value)
+                ? null // Deshabilitar cuando está escribiendo
+                : () {
+                    if (controller.text.isNotEmpty) {
+                      _handleSubmit(
+                        controller.text,
+                        controller,
+                        chatNotifier,
+                        ref,
+                      );
+                    }
+                  },
           ),
         ),
         const SizedBox(width: 8),

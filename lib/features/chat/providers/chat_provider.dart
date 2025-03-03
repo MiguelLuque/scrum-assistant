@@ -24,6 +24,8 @@ class VoiceMode extends _$VoiceMode {
 class ChatNotifier extends _$ChatNotifier {
   bool _isProcessing = false;
 
+  bool get isTyping => _isProcessing;
+
   @override
   List<ChatMessage> build() {
     return [];
@@ -105,6 +107,7 @@ class ChatNotifier extends _$ChatNotifier {
         ),
       ];
     } catch (e) {
+      print('Error sending message: $e');
       state = [
         ...state,
         ChatMessage(

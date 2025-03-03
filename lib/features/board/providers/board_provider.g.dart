@@ -6,7 +6,7 @@ part of 'board_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$boardNotifierHash() => r'59bb2efd4b35fa7695f46600eef21eae470551b9';
+String _$boardNotifierHash() => r'e1dc9249bf93eae026767e4e72a808016f1bd91b';
 
 /// See also [BoardNotifier].
 @ProviderFor(BoardNotifier)
@@ -23,4 +23,4 @@ final boardNotifierProvider =
 
 typedef _$BoardNotifier = AutoDisposeNotifier<List<ColumnModel>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

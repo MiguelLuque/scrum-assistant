@@ -7,6 +7,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:scrum_assistant/features/chat/widgets/typing_indicator.dart';
 
 class ChatMessages extends HookConsumerWidget {
   const ChatMessages({super.key});
@@ -14,6 +15,7 @@ class ChatMessages extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final messages = ref.watch(chatNotifierProvider);
+    final isTyping = ref.watch(chatNotifierProvider.notifier).isTyping;
     final tts = useMemoized(() => FlutterTts());
     final isVoiceMode = ref.watch(voiceModeProvider);
     final scrollController = useScrollController();
@@ -48,74 +50,130 @@ class ChatMessages extends HookConsumerWidget {
       return subscription.close;
     }, [isVoiceMode]);
 
-    return ListView.builder(
-      controller: scrollController,
-      reverse:
-          true, // Invertir la lista para mostrar los mensajes más recientes primero
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      itemCount: messages.length,
-      itemBuilder: (context, index) {
-        final message = messages[
-            messages.length - 1 - index]; // Obtener el mensaje en orden inverso
-        final isUser = message.isUser;
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            controller: scrollController,
+            reverse:
+                true, // Invertir la lista para mostrar los mensajes más recientes primero
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final message = messages[messages.length -
+                  1 -
+                  index]; // Obtener el mensaje en orden inverso
+              final isUser = message.isUser;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 4,
-          ),
-          child: Row(
-            mainAxisAlignment:
-                isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-            children: [
-              if (!isUser) _buildAvatar(isUser, theme),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.75,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isUser
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(20),
-                      topRight: const Radius.circular(20),
-                      bottomLeft: Radius.circular(isUser ? 20 : 5),
-                      bottomRight: Radius.circular(isUser ? 5 : 20),
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
+                child: Row(
+                  mainAxisAlignment:
+                      isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  children: [
+                    if (!isUser) _buildAvatar(isUser, theme),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.75,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isUser
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.surfaceVariant,
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20),
+                            topRight: const Radius.circular(20),
+                            bottomLeft: Radius.circular(isUser ? 20 : 5),
+                            bottomRight: Radius.circular(isUser ? 5 : 20),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                          border: !isUser
+                              ? Border.all(
+                                  color: theme.colorScheme.outline
+                                      .withOpacity(0.3),
+                                  width: 1,
+                                )
+                              : null,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildMessageContent(
+                                message.content, isUser, theme),
+                            if (message.hasToolCalls) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                '🛠 ${message.toolCalls.length} tool calls',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: isUser
+                                      ? theme.colorScheme.onPrimary
+                                          .withOpacity(0.7)
+                                      : theme.colorScheme.onSurfaceVariant
+                                          .withOpacity(0.7),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    if (isUser) _buildAvatar(isUser, theme),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        // Mostrar el indicador de escritura cuando el bot está procesando
+        if (isTyping)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _buildAvatar(false, theme),
+                const SizedBox(width: 8),
+                Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 12,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildMessageContent(message.content, isUser, theme),
-                      if (message.hasToolCalls) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          '🛠 ${message.toolCalls.length} tool calls',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: isUser
-                                ? theme.colorScheme.onPrimary.withOpacity(0.7)
-                                : theme.colorScheme.onSurfaceVariant
-                                    .withOpacity(0.7),
-                          ),
-                        ),
-                      ],
-                    ],
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                      bottomLeft: Radius.circular(5),
+                      bottomRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(3, (index) {
+                      return _buildTypingDot(index, theme);
+                    }),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              if (isUser) _buildAvatar(isUser, theme),
-            ],
+              ],
+            ),
           ),
-        );
-      },
+      ],
     );
   }
 
@@ -178,6 +236,25 @@ class ChatMessages extends HookConsumerWidget {
         'code': CustomCodeBlockBuilder(
           textColor: theme.colorScheme.onSurfaceVariant,
         ),
+      },
+    );
+  }
+
+  Widget _buildTypingDot(int index, ThemeData theme) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: Duration(milliseconds: 500),
+      curve: Interval(index * 0.2, 0.6 + index * 0.2, curve: Curves.easeInOut),
+      builder: (context, value, child) {
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          width: 8,
+          height: 8 + (8 * (1 - value)),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary.withOpacity(0.7 - (0.2 * index)),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        );
       },
     );
   }
