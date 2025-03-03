@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrum_assistant/controllers/board_drag_controller.dart';
 import 'package:scrum_assistant/features/chat/widgets/chat_bottom_sheet.dart';
 import 'package:scrum_assistant/providers/overlay_controller.dart';
-import 'package:scrum_assistant/providers/voice_assistant.dart';
 import 'package:scrum_assistant/theme/app_theme.dart';
 import 'package:scrum_assistant/widgets/kanban_column.dart';
 import 'package:scrum_assistant/widgets/voice_assistant_overlay.dart';
